@@ -30,9 +30,6 @@
 (setq load-path (cons "~/.emacs.d/elisp/org-mode/EXPERIMENTAL" load-path))
 (setq load-path (cons "~/.emacs.d/elisp/org-mode/lisp" load-path))
 
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/emacs-color-theme-solarized")
-(load-theme 'solarized-dark' t)
-
 (defun p4-open-file-for-this-buffer ()
   "Call p4 open on the file associated with the current buffer"
   (interactive)
