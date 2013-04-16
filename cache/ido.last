@@ -1,0 +1,46 @@
+;;; -*- coding: utf-8 -*-
+
+;; ----- ido-last-directory-list -----
+(
+ ("c:/Users/rab/" . "Desktop/")
+)
+
+;; ----- ido-work-directory-list -----
+(
+ "c:/Users/rab/Desktop/"
+ "~/"
+ "~/Desktop"
+ "~/Documents"
+ "~src"
+)
+
+;; ----- ido-work-file-list -----
+(
+ "script_payload.org"
+)
+
+;; ----- ido-dir-file-cache -----
+(
+ ("c:/Users/rab/Desktop/" (20838 55609 0 0) "tracing.txt" "TORREY.org~" "TORREY.org" "Terminals.lnk" "staging.rar" "staging-direct/" "staging/" "RDP/" "R.Andrew/" "Nexus Root Toolkit.lnk" "monitor.cmd" "Mobile Net Switch.lnk" "FG200A.cer" "Evernote.lnk" "Emacs.lnk" "docscanner04092013120458.pdf" "diversys_export.1pif" "Diversys Learning - Producteev.url" "Diversys Demo Training Website.htm" "desktop.ini" "#example.html#" "../" "./")
+
+ ("c:/Users/" (20746 56591 0 0) "UpdatusUser/" "rab/" "Public/" "desktop.ini" "Default User/" "Default/" "All Users/" "../" "./")
+
+ ("c:/Users/rab/" (20837 30464 0 0) "XULRunner-Examples/" "xulrunner-19.0.en-US.win32.zip" "xulrunner-19.0.en-US.win32.sdk.zip" "xulrunner/" "workspace/" "Wallpapers/" "Videos/" "Transcriptions/" "Templates/" "Start Menu/" "src/" "SendTo/" "Searches/" "schema.txt" "Saved Games/" "Recent/" "rbailey_bubba_4370/" "Programs/" "PrintHood/" "play/" "Pictures/" "Perforce/" "perf/" "p4tickets.txt" "ntuser.ini" "NTUSER.DAT{b3751699-9e4d-11e2-9d2e-8dd416e0bdb7}.TMContainer00000000000000000002.regtrans-ms" "NTUSER.DAT{b3751699-9e4d-11e2-9d2e-8dd416e0bdb7}.TMContainer00000000000000000001.regtrans-ms" "NTUSER.DAT{b3751699-9e4d-11e2-9d2e-8dd416e0bdb7}.TM.blf" "NTUSER.DAT{826f9e0d-709f-11e2-ba80-00090ffe0001}.TMContainer00000000000000000002.regtrans-ms" "NTUSER.DAT{826f9e0d-709f-11e2-ba80-00090ffe0001}.TMContainer00000000000000000001.regtrans-ms" "NTUSER.DAT{826f9e0d-709f-11e2-ba80-00090ffe0001}.TM.blf" "NTUSER.DAT{016888bd-6c6f-11de-8d1d-001e0bcde3ec}.TMContainer00000000000000000002.regtrans-ms" "NTUSER.DAT{016888bd-6c6f-11de-8d1d-001e0bcde3ec}.TMContainer00000000000000000001.regtrans-ms" "NTUSER.DAT{016888bd-6c6f-11de-8d1d-001e0bcde3ec}.TM.blf" "NTUSER.DAT{016888bc-6c6f-11de-8d1d-001e0bcde3ec}.TxR.blf" "NTUSER.DAT{016888bc-6c6f-11de-8d1d-001e0bcde3ec}.TxR.2.regtrans-ms" "NTUSER.DAT{016888bc-6c6f-11de-8d1d-001e0bcde3ec}.TxR.1.regtrans-ms" "NTUSER.DAT{016888bc-6c6f-11de-8d1d-001e0bcde3ec}.TxR.0.regtrans-ms" "ntuser.dat.LOG2" "ntuser.dat.LOG1" "NTUSER.DAT" "NetHood/" "My Documents/" "Music/" "mini.iso" "Local Settings/" "Links/" "letter.txt" "keys-last.zip.gpg" "jobs/" "jhgc" "grails-2.2.1.zip" "grails-2.2.0/" "grails/" "Favorites/" "Dropbox/" "Downloads/" "download" "Documents/" "Desktop/" "data-integration/" "Cookies/" "Contacts/" "bin/" "attendance.txt" "Application Data/" "AppData/" ".zenmap/" ".xsession" ".xmonad/" ".xmobarrc" ".xinitrc" ".Xdefaults" ".tmux.conf" ".ssh/" ".screenrc" ".sbt/" ".rnd" ".quiltrc" ".psql_history" ".profile" ".pentaho/" ".p4qt/" ".p4admin/" ".minttyrc" ".lesshst" ".keychain/" ".kettle/" ".IntelliJIdea12/" ".inputrc" ".groovy/" ".grails/" ".gnupg/" ".gitignore" ".gitconfig" ".git/" ".gdbinit" ".freemind/" ".fonts/" ".emacs.d/" ".bundle/" ".bcrc" ".bash_profile" ".bash_history" ".bashrc~" ".bashrc" ".aptitude/" ".android/" "../" "./")
+
+ ("c:/Users/rab/AppData/" (20747 10665 0 0) "Roaming/" "LocalLow/" "LocalGoogle/" "Local/" "../" "./")
+
+ ("c:/Users/rab/AppData/Roaming/" (20838 54556 0 0) "XnView/" "XMind/" "Wireshark/" "winscp.rnd" "Wargaming.net/" "vlc/" "uTorrent/" "Unity/" "TuxPaint/" "Trillian/" "Thunderbird/" "SvcTraceViewer.exe.settings" "SumatraPDF/" "Skype/" "SecuROM/" "RichardsonSoftware/" "RazorSQL/" "NVIDIA/" "Notepad++/" "MySQL/" "MozillaTest/" "Mozilla/" "Miranda/" "Microsoft FxCop/" "Microsoft/" "Media Center Programs/" "Macromedia/" "Logitech/" "LibreOffice/" "Launchy/" "KiTTY/" "JetBrains/" "Identities/" "HexChat/" "Google/" "gnupg/" "Gmail Notifier Plus/" "GitHub/" "FreeFileSync/" "Foxit Software/" "foobar2000/" "Dropbox/" "CamStudio.cfg" "CamShapes.ini" "CamLayout.ini" "Camdata.ini" "Bioshock2/" "Bioshock/" "Ben Bucksch/" "Atropa/" "Apple Computer/" "Agile Web Solutions/" "Adobe/" ".purple/" ".emacs.d/" "../" "./")
+
+ ("c:/Users/rab/AppData/Roaming/Microsoft/" (20828 33422 0 0) "WordPad/" "Windows/" "WDExpress/" "VisualStudio/" "Vault/" "SystemCertificates/" "SQL Server Management Studio/" "Spelling/" "Speech/" "Protect/" "Network/" "MSDN/" "MMC/" "Microsoft SQL Server/" "Microsoft Security Client/" "Internet Explorer/" "Installer/" "IMJP9_0/" "IMJP8_1/" "IMJP12/" "IME12/" "IME/" "HTML Help/" "eHome/" "Crypto/" "Credentials/" "CLR Security Config/" "../" "./")
+
+ ("c:/Users/rab/AppData/Roaming/Microsoft/Windows/" (20747 10671 0 0) "Themes/" "Templates/" "Start Menu/" "SendTo/" "Recent/" "PrivacIE/" "Printer Shortcuts/" "Network Shortcuts/" "LockScreen_Z/" "LockScreen_Y/" "LockScreen_X/" "LockScreen_W/" "LockScreen_V/" "LockScreen_U/" "Libraries/" "IETldCache/" "IEDownloadHistory/" "IECompatUACache/" "IECompatCache/" "Cookies/" "AccountPictures/" "../" "./")
+
+ ("c:/Users/rab/AppData/Roaming/Microsoft/Windows/Start Menu/" (20747 10671 0 0) #("µTorrent.lnk" 0 12 (charset windows-1252)) "Programs/" "desktop.ini" "../" "./")
+
+ ("c:/Users/rab/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/" (20837 56532 0 0) "Wugs Nexus Root Tookit/" "WinDirStat/" "Update Checker.lnk" "Terminals.lnk" "System Tools/" "Startup/" "Scratch/" "pidgin-otr/" "Notepad++/" "Music Manager/" "Microsoft Windows Performance Toolkit/" "Maintenance/" "Launchy/" "Internet Explorer.lnk" "Groovy-2.1.0/" "Gnu Emacs/" "GitHub, Inc/" "Dropbox/" "Downloads.lnk" "desktop.ini" "Administrative Tools/" "Accessories/" "Accessibility/" "../" "./")
+
+ ("c:/Users/rab/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Gnu Emacs/" (20746 58924 0 0) "Emacs.lnk" "../" "./")
+)
+
+;; ----- ido-unc-hosts-cache -----
+t
