@@ -10,6 +10,8 @@
 (setq load-path (cons "~/.emacs.d/elisp" load-path))
 (setq load-path (cons "~/.emacs.d/elisp/mmm-mode-0.5.1" load-path))
 (setq load-path (cons "~/.emacs.d/elisp/psgml-1.3.2" load-path))
+(setq load-path (cons "~/.emacs.d/elisp/xxml-master" load-path))
+
 
 (setq load-path (cons "~/.emacs.d/elisp/org-mode/EXPERIMENTAL" load-path))
 (setq load-path (cons "~/.emacs.d/elisp/org-mode/lisp" load-path))
@@ -125,6 +127,16 @@
     )
     
     (setq mmm-submode-decoration-level 2)
+
+(setq auto-mode-alist
+      (append
+       (list
+        '("\\.cfm$" . sgml-html-mode)
+        '("\\.cfc$" . sgml-html-mode)
+        )
+       auto-mode-alist))
+
+
 
 ;; END CF BULLSHIT PEN
 
