@@ -1,7 +1,133 @@
+(setq vc-handled-backends nil) 
+
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+			 ("marmalade" . "http://marmalade-repo.org/packages/")
+			 ("melpa" . "http://melpa.milkbox.net/packages/")))
+
+;; (toggle-debug-on-error t)
+
+(setq load-path (cons "~/.emacs.d" load-path))
+(setq load-path (cons "~/.emacs.d/elisp" load-path))
+(setq load-path (cons "~/.emacs.d/elisp/mmm-mode-0.5.1" load-path))
+(setq load-path (cons "~/.emacs.d/elisp/psgml-1.3.2" load-path))
+
+(setq load-path (cons "~/.emacs.d/elisp/org-mode/EXPERIMENTAL" load-path))
+(setq load-path (cons "~/.emacs.d/elisp/org-mode/lisp" load-path))
 
 (setq visible-bell t)
 
 (setq-default buffer-file-coding-system 'undecided-unix)
+
+
+;; CF BULLSHIT PEN
+(require 'mmm-auto)
+
+(autoload 'sgml-mode "psgml" "Major mode to edit SGML files." t )
+(autoload 'xml-mode "psgml" "Major mode to edit XML files." t)
+    
+(setq auto-mode-alist
+      (append
+       (list
+        '("\\.sgm$" . sgml-mode)
+        '("\\.sgml$" . sgml-mode)
+        '("\\.xml$" . xml-mode)
+        )
+       auto-mode-alist))
+
+(autoload 'xxml-mode-routine "xxml")
+(add-hook 'sgml-mode-hook 'xxml-mode-routine)
+(add-hook 'xml-mode-hook 'xxml-mode-routine)
+
+(define-derived-mode sgml-html-mode sgml-mode "HTML"
+  "This version of html mode is just a wrapper around sgml mode."
+  (make-local-variable 'sgml-declaration)
+  (make-local-variable 'sgml-default-doctype-name)
+  (make-local-variable 'imenu-sort-function)
+  (setq
+   sgml-default-doctype-name    "html"
+					;   sgml-declaration             "~/lib/DTD/html401/HTML4.decl"
+   sgml-always-quote-attributes t
+   sgml-indent-step             2
+   sgml-indent-data             nil
+   sgml-minimize-attributes     nil
+   sgml-omittag                 nil
+   sgml-shorttag                nil
+   imenu-generic-expression   '(("Includes" "<cfinclude[ ]*template=\"\\([a-zA-Z0-9-_./#]*\\)\"[ ]*>" 1)
+				("Cases" "<cfcase[ ]*value=\"\\([a-zA-Z0-9-_,. ]*\\)\".*>" 1)
+				("Forms" "<form.*action[ ]*=[ ]*\"\\([a-zA-Z0-9-_#.\?=]*\\)\".*>" 1)
+				("Queries" "<cfquery.*name[ ]*=[ ]*\"\\([a-zA-Z0-9-_#.]*\\)\".*>" 1)
+				("Loops" "<\\(cfloop\\|cfoutput\\).*\\(list\\|to\\|query\\)[ ]*=[ ]*\"\\([a-zA-Z0-9-_#.=]*\\)\".*>" 3)
+				("JSFunctions" "function[ ]*\\([a-zA-Z0-9-_]*\\)[ ]*(.*)" 1)
+				("Content" "<cfcontent.*type=\"\\([a-zA-Z0-9-_./]*\\)\".*>" 1)
+					;cfmodule, cflocation, cftransaction, cfabort, cfif?, add cfform to forms, cflock
+				)
+   imenu-sort-function 'imenu--sort-by-name
+   imenu-auto-rescan t
+   )
+  )
+;; multi-line html comments!
+    (defvar lastpos 0)
+    (defun check-comment2 ()
+      (setq lastpos (point))
+      t)
+    
+    (defun count-matches2 (count exp)
+      (let ((x (search-backward exp lastpos t)))
+        (if x (count-matches2 (+ 1 count) exp)
+          count)))
+    (defun count-matches3 (exp p)
+      (save-excursion
+        (goto-char p)
+        (count-matches2 0 exp)))
+    
+    (defun check-comment ()
+      (save-match-data
+        (save-excursion
+          (let ((x (count-matches3 "--->" (- (point) 4)))
+		    (y (count-matches3 "<!---" (point))))
+					;(message "%d %d" x y)
+	    (if (eq x y) t nil)))))
+
+
+ (mmm-add-group
+     'fancy-html
+     '(
+             (html-javascript-embedded
+                    :submode javascript-generic-mode
+                    :face mmm-code-submode-face
+                    :front "<script\[^>\]*>"
+                    :back "</script>")
+             (html-css-embedded
+                    :submode css-mode
+                    :face mmm-declaration-submode-face
+                    :front "<style\[^>\]*>"
+                    :back "</style>")
+             (html-comment-embedded        ; multi-line html comments!
+    ;                :submode text-mode
+                    :face font-lock-comment-face
+                    :front "<!---"
+                    :back "--->"
+                    :front-verify check-comment2
+                    :back-verify check-comment
+                    :include-front
+                    :include-back)
+             (html-javascript-attribute
+                    :submode javascript-generic-mode
+                    :face mmm-code-submode-face
+                    :front "\\bon\\w+=\\s-*\""
+                    :back "\"")
+             (html-css-attribute
+                    :submode css-mode
+                    :face mmm-declaration-submode-face
+                    :front "\\bstyle=\\s-*\""
+                    :back "\"")
+       )
+    )
+    
+    (setq mmm-submode-decoration-level 2)
+
+;; END CF BULLSHIT PEN
+
 
 ;;; turn on syntax highlighting
 (global-font-lock-mode 1)
@@ -17,18 +143,6 @@
 ;;              (require 'groovy-electric)
 ;;              (groovy-electric-mode)))
 
-(setq vc-handled-backends nil) 
-
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-			 ("marmalade" . "http://marmalade-repo.org/packages/")
-			 ("melpa" . "http://melpa.milkbox.net/packages/")))
-
-;; (toggle-debug-on-error t)
-
-(setq load-path (cons "~/.emacs.d" load-path))
-(setq load-path (cons "~/.emacs.d/elisp" load-path))
-(setq load-path (cons "~/.emacs.d/elisp/org-mode/EXPERIMENTAL" load-path))
-(setq load-path (cons "~/.emacs.d/elisp/org-mode/lisp" load-path))
 
 (defun p4-open-file-for-this-buffer ()
   "Call p4 open on the file associated with the current buffer"
