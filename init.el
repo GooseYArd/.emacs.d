@@ -16,6 +16,7 @@
 (setq load-path (cons "~/.emacs.d/elisp/org-mode/EXPERIMENTAL" load-path))
 (setq load-path (cons "~/.emacs.d/elisp/org-mode/lisp" load-path))
 
+
 (setq visible-bell t)
 
 (setq-default buffer-file-coding-system 'undecided-unix)
@@ -163,6 +164,10 @@
     (shell-command (format "p4 open %s" p4-file-name))
     (setq buffer-read-only nil)
     ))
+
+
+(autoload 'cfml-helper-mode "cfml-helper-mode" "Yay HTML" t)
+(add-to-list 'auto-mode-alist '("\.cfm$" . cfml-helper-mode))
 
 (autoload 'gtags-mode "gtags" "" t)
 (setq c-mode-hook
