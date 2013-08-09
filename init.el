@@ -15,7 +15,10 @@
 
 (setq load-path (cons "~/.emacs.d/elisp/org-mode/EXPERIMENTAL" load-path))
 (setq load-path (cons "~/.emacs.d/elisp/org-mode/lisp" load-path))
+(setq load-path (cons "~/.emacs.d/elisp/yaml-mode" load-path))
 
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
 (setq visible-bell t)
 
@@ -467,7 +470,7 @@ Uses `current-date-time-format' for the formatting the date/time."
 ;;; interfacing with ELPA, the package archive.
 ;;; Move this code earlier if you want to reference
 ;;; packages in your .emacs.
-(when
-    (load
-     (expand-file-name "~/.emacs.d/elpa/package.el"))
-  (package-initialize))
+;;;(when
+;;;    (load
+;;;     (expand-file-name "~/.emacs.d/elpa/package.el"))
+;;;  (package-initialize))
