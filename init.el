@@ -11,8 +11,7 @@
 (setq load-path (cons "~/.emacs.d/elisp/mmm-mode-0.5.1" load-path))
 (setq load-path (cons "~/.emacs.d/elisp/psgml-1.3.2" load-path))
 (setq load-path (cons "~/.emacs.d/elisp/xxml-master" load-path))
-
-
+(setq load-path (cons "~/.emacs.d/elisp/org-mode" load-path))
 (setq load-path (cons "~/.emacs.d/elisp/org-mode/EXPERIMENTAL" load-path))
 (setq load-path (cons "~/.emacs.d/elisp/org-mode/lisp" load-path))
 (setq load-path (cons "~/.emacs.d/elisp/yaml-mode" load-path))
