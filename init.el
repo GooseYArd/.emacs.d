@@ -1,16 +1,27 @@
+;; (when
+;;     (load
+;;      (expand-file-name "~/.emacs.d/elpa/package.el"))
+;;   (package-initialize))
+
 (setq vc-handled-backends nil) 
+
+(require 'package)
+(add-to-list 'package-archives
+	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(package-initialize)
+(unless (package-installed-p 'scala-mode2)
+  (package-refresh-contents) (package-install 'scala-mode2))
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
 			 ("marmalade" . "http://marmalade-repo.org/packages/")
 			 ("melpa" . "http://melpa.milkbox.net/packages/")))
 
+(setq org-archive-location "~/Dropbox/archive.org::From %s")
+
 ;; (toggle-debug-on-error t)
 
 (setq load-path (cons "~/.emacs.d" load-path))
 (setq load-path (cons "~/.emacs.d/elisp" load-path))
-(setq load-path (cons "~/.emacs.d/elisp/mmm-mode-0.5.1" load-path))
-(setq load-path (cons "~/.emacs.d/elisp/psgml-1.3.2" load-path))
-(setq load-path (cons "~/.emacs.d/elisp/xxml-master" load-path))
 (setq load-path (cons "~/.emacs.d/elisp/org-mode" load-path))
 (setq load-path (cons "~/.emacs.d/elisp/org-mode/EXPERIMENTAL" load-path))
 (setq load-path (cons "~/.emacs.d/elisp/org-mode/lisp" load-path))
@@ -23,156 +34,21 @@
 
 (setq-default buffer-file-coding-system 'undecided-unix)
 
-
-;; CF BULLSHIT PEN
-(require 'mmm-auto)
-
-(autoload 'sgml-mode "psgml" "Major mode to edit SGML files." t )
-(autoload 'xml-mode "psgml" "Major mode to edit XML files." t)
-    
-(setq auto-mode-alist
-      (append
-       (list
-        '("\\.sgm$" . sgml-mode)
-        '("\\.sgml$" . sgml-mode)
-        '("\\.xml$" . xml-mode)
-        )
-       auto-mode-alist))
-
-(autoload 'xxml-mode-routine "xxml")
-(add-hook 'sgml-mode-hook 'xxml-mode-routine)
-(add-hook 'xml-mode-hook 'xxml-mode-routine)
-
-(define-derived-mode sgml-html-mode sgml-mode "HTML"
-  "This version of html mode is just a wrapper around sgml mode."
-  (make-local-variable 'sgml-declaration)
-  (make-local-variable 'sgml-default-doctype-name)
-  (make-local-variable 'imenu-sort-function)
-  (setq
-   sgml-default-doctype-name    "html"
-					;   sgml-declaration             "~/lib/DTD/html401/HTML4.decl"
-   sgml-always-quote-attributes t
-   sgml-indent-step             2
-   sgml-indent-data             nil
-   sgml-minimize-attributes     nil
-   sgml-omittag                 nil
-   sgml-shorttag                nil
-   imenu-generic-expression   '(("Includes" "<cfinclude[ ]*template=\"\\([a-zA-Z0-9-_./#]*\\)\"[ ]*>" 1)
-				("Cases" "<cfcase[ ]*value=\"\\([a-zA-Z0-9-_,. ]*\\)\".*>" 1)
-				("Forms" "<form.*action[ ]*=[ ]*\"\\([a-zA-Z0-9-_#.\?=]*\\)\".*>" 1)
-				("Queries" "<cfquery.*name[ ]*=[ ]*\"\\([a-zA-Z0-9-_#.]*\\)\".*>" 1)
-				("Loops" "<\\(cfloop\\|cfoutput\\).*\\(list\\|to\\|query\\)[ ]*=[ ]*\"\\([a-zA-Z0-9-_#.=]*\\)\".*>" 3)
-				("JSFunctions" "function[ ]*\\([a-zA-Z0-9-_]*\\)[ ]*(.*)" 1)
-				("Content" "<cfcontent.*type=\"\\([a-zA-Z0-9-_./]*\\)\".*>" 1)
-					;cfmodule, cflocation, cftransaction, cfabort, cfif?, add cfform to forms, cflock
-				)
-   imenu-sort-function 'imenu--sort-by-name
-   imenu-auto-rescan t
-   )
-  )
-;; multi-line html comments!
-    (defvar lastpos 0)
-    (defun check-comment2 ()
-      (setq lastpos (point))
-      t)
-    
-    (defun count-matches2 (count exp)
-      (let ((x (search-backward exp lastpos t)))
-        (if x (count-matches2 (+ 1 count) exp)
-          count)))
-    (defun count-matches3 (exp p)
-      (save-excursion
-        (goto-char p)
-        (count-matches2 0 exp)))
-    
-    (defun check-comment ()
-      (save-match-data
-        (save-excursion
-          (let ((x (count-matches3 "--->" (- (point) 4)))
-		    (y (count-matches3 "<!---" (point))))
-					;(message "%d %d" x y)
-	    (if (eq x y) t nil)))))
-
-
- (mmm-add-group
-     'fancy-html
-     '(
-             (html-javascript-embedded
-                    :submode javascript-generic-mode
-                    :face mmm-code-submode-face
-                    :front "<script\[^>\]*>"
-                    :back "</script>")
-             (html-css-embedded
-                    :submode css-mode
-                    :face mmm-declaration-submode-face
-                    :front "<style\[^>\]*>"
-                    :back "</style>")
-             (html-comment-embedded        ; multi-line html comments!
-    ;                :submode text-mode
-                    :face font-lock-comment-face
-                    :front "<!---"
-                    :back "--->"
-                    :front-verify check-comment2
-                    :back-verify check-comment
-                    :include-front
-                    :include-back)
-             (html-javascript-attribute
-                    :submode javascript-generic-mode
-                    :face mmm-code-submode-face
-                    :front "\\bon\\w+=\\s-*\""
-                    :back "\"")
-             (html-css-attribute
-                    :submode css-mode
-                    :face mmm-declaration-submode-face
-                    :front "\\bstyle=\\s-*\""
-                    :back "\"")
-       )
-    )
-    
-    (setq mmm-submode-decoration-level 2)
-
-(setq auto-mode-alist
-      (append
-       (list
-        '("\\.cfm$" . sgml-html-mode)
-        '("\\.cfc$" . sgml-html-mode)
-        )
-       auto-mode-alist))
-
-
-
-;; END CF BULLSHIT PEN
-
+;; (load "/opt/local/share/emacs/site-lisp/haskell-mode-2.4/haskell-site-file")
+;; (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+;; (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
+;; (add-hook 'haskell-mode-hook 'font-lock-mode)
+;; (add-hook 'haskell-mode-hook 'imenu-add-menubar-index)
 
 ;;; turn on syntax highlighting
 (global-font-lock-mode 1)
 
-;;; use groovy-mode when file ends in .groovy or has #!/bin/groovy at start
-(autoload 'groovy-mode "groovy-mode" "Major mode for editing Groovy code." t)
-(add-to-list 'auto-mode-alist '("\.groovy$" . groovy-mode))
-(add-to-list 'interpreter-mode-alist '("groovy" . groovy-mode))
-
-;;; make Groovy mode electric by default.
-;; (add-hook 'groovy-mode-hook
-;;           '(lambda ()
-;;              (require 'groovy-electric)
-;;              (groovy-electric-mode)))
-
-
-(defun p4-open-file-for-this-buffer ()
-  "Call p4 open on the file associated with the current buffer"
-  (interactive)
-  (let ((p4-file-name (file-name-nondirectory buffer-file-name)))
-    (shell-command (format "p4 open %s" p4-file-name))
-    (setq buffer-read-only nil)
-    ))
-
-
-(autoload 'cfml-helper-mode "cfml-helper-mode" "Yay HTML" t)
-(add-to-list 'auto-mode-alist '("\.cfm$" . cfml-helper-mode))
-
 (autoload 'gtags-mode "gtags" "" t)
 (setq c-mode-hook
+      '(lambda ()
+	 (gtags-mode 1)
+	 ))
+(setq pascal-mode-hook
       '(lambda ()
 	 (gtags-mode 1)
 	 ))
@@ -210,26 +86,26 @@
   (interactive)
   (if (= (count-windows) 2)
       (let* ((this-win-buffer (window-buffer))
-	          (next-win-buffer (window-buffer (next-window)))
-		       (this-win-edges (window-edges (selected-window)))
-		            (next-win-edges (window-edges (next-window)))
-			         (this-win-2nd (not (and (<= (car this-win-edges)
-							      (car next-win-edges))
-							      (<= (cadr this-win-edges)
-								   (cadr next-win-edges)))))
-				      (splitter
-				             (if (= (car this-win-edges)
-						         (car (window-edges (next-window))))
-						   'split-window-horizontally
-					       'split-window-vertically)))
+	     (next-win-buffer (window-buffer (next-window)))
+	     (this-win-edges (window-edges (selected-window)))
+	     (next-win-edges (window-edges (next-window)))
+	     (this-win-2nd (not (and (<= (car this-win-edges)
+					 (car next-win-edges))
+				     (<= (cadr this-win-edges)
+					 (cadr next-win-edges)))))
+	     (splitter
+	      (if (= (car this-win-edges)
+		     (car (window-edges (next-window))))
+		  'split-window-horizontally
+		'split-window-vertically)))
 	(delete-other-windows)
 	(let ((first-win (selected-window)))
-	    (funcall splitter)
-	      (if this-win-2nd (other-window 1))
-	        (set-window-buffer (selected-window) this-win-buffer)
-		  (set-window-buffer (next-window) next-win-buffer)
-		    (select-window first-win)
-		      (if this-win-2nd (other-window 1))))))
+	  (funcall splitter)
+	  (if this-win-2nd (other-window 1))
+	  (set-window-buffer (selected-window) this-win-buffer)
+	  (set-window-buffer (next-window) next-win-buffer)
+	  (select-window first-win)
+	  (if this-win-2nd (other-window 1))))))
 
 (define-key ctl-x-4-map "t" 'toggle-window-split)
 
@@ -237,11 +113,10 @@
   "Revert buffer without confirmation."
   (interactive) (revert-buffer t t))
 
-
 (setq org-todo-keywords
       '((type "TODO(t)" "STARTED(s)" "WAITING(w)" "APPT(a)" "|" "CANCELLED(c)" "DEFERRED(e)" "DONE(d)")
-      (sequence "PROJECT(p)" "|" "FINISHED(f)")
-      (sequence "INVOICE(i)" "SENT(n)" "|" "RCDV(r)")))
+	(sequence "PROJECT(p)" "|" "FINISHED(f)")
+	(sequence "INVOICE(i)" "SENT(n)" "|" "RCDV(r)")))
 
 (which-function-mode t)
 
@@ -249,13 +124,6 @@
 ;;(linum-mode 1) 
 ;;(add-hook 'find-file-hook (lambda () (linum-mode 1)))
 ;;(setq linum-format "%d ")
-
-(fset 'noreview
-   "Code review: not needed since this is a minor change\C-e")
-(global-set-key (kbd "C-c n") 'noreview)
-
-(global-set-key (kbd "C-c c") 'comment-region)
-
 
 ;; Global Settings
 
@@ -269,11 +137,6 @@
 (modify-frame-parameters nil '((wait-for-wm . nil)))
 
 (show-paren-mode t)
-
-;; visual stuff when in x11 mode
-;;(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-;;(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-;;(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 
 ;;
 ;; Modes
@@ -381,18 +244,7 @@
      (require 'dtrt-indent)
      (dtrt-indent-mode t)))
 
-;; (setq compilation-finish-function
-;;       (lambda (buf str)
-;;         (if (string-match "exited abnormally" str)
-;;            ;;there were errors
-;;             (message "compilation errors, press C-x ` to visit")
-;;           ;;no errors, make the compilation window go away in 0.5 seconds
-;;           (run-at-time 0.5 nil 'delete-windows-on buf)
-;;           (message "NO COMPILATION ERRORS!"))))
 
-;; (c-toggle-hungry-state 1)
-
-;;
 ;; end languages
 ;;
 
@@ -423,37 +275,6 @@
   (local-set-key '[(shift tab)] 'comint-next-matching-input-from-input)
   )
 
-;;
-;; Timestamp insertion crap, I use these to generate incident logs
-;;
-(defvar current-date-time-format "%a %b %d %H:%M:%S %Z %Y"
-  "Format of date to insert with `insert-current-date-time' func
-See help of `format-time-string' for possible replacements")
-
-(defvar current-time-format "%a %H:%M:%S"
-  "Format of date to insert with `insert-current-time' func.
-Note the weekly scope of the command's precision.")
-
-(defun insert-current-date-time ()
-  "insert the current date and time into current buffer.
-Uses `current-date-time-format' for the formatting the date/time."
-       (interactive)
-       (insert "==========\n")
-;       (insert (let () (comment-start)))
-       (insert (format-time-string current-date-time-format (current-time)))
-       (insert "\n")
-       )
-
-(defun insert-current-time ()
-  "insert the current time (1-week scope) into the current buffer."
-       (interactive)
-       (insert (format-time-string current-time-format (current-time)))
-       (insert "\n")
-       )
-
-(global-set-key "\C-c\C-d" 'insert-current-date-time)
-(global-set-key "\C-c\C-t" 'insert-current-time)
-
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -473,3 +294,4 @@ Uses `current-date-time-format' for the formatting the date/time."
 ;;;    (load
 ;;;     (expand-file-name "~/.emacs.d/elpa/package.el"))
 ;;;  (package-initialize))
+
