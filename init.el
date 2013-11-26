@@ -18,8 +18,16 @@
 (unless (package-installed-p 'scala-mode2)
   (package-refresh-contents) (package-install 'scala-mode2))
 
+(unless (package-installed-p 'go-mode)
+  (package-refresh-contents) (package-install 'go-mode))
+
 (unless (package-installed-p 'erlang)
   (package-refresh-contents) (package-install 'erlang))
+
+(setq package-archives '(("gnu"
+. "http://elpa.gnu.org/packages/")
+			 ("marmalade" . "http://marmalade-repo.org/packages/")
+			 ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 (setq org-archive-location "~/Dropbox/archive.org::From %s")
 
