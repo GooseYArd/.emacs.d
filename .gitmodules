@@ -7,3 +7,6 @@
 [submodule "scala-mode2"]
 	path = scala-mode2
 	url = /Users/rbailey/.emacs.d/elisp/scala-mode2/
+[submodule "elisp/flx"]
+	path = elisp/flx
+	url = https://github.com/lewang/flx.git

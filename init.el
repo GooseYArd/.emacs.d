@@ -6,15 +6,20 @@
 (setq vc-handled-backends nil) 
 
 (require 'package)
+
+;; (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+;; 			 ("marmalade" . "http://marmalade-repo.org/packages/")
+;; 			 ("melpa" . "http://melpa.milkbox.net/packages/")))
+
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
+
 (package-initialize)
 (unless (package-installed-p 'scala-mode2)
   (package-refresh-contents) (package-install 'scala-mode2))
 
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-			 ("marmalade" . "http://marmalade-repo.org/packages/")
-			 ("melpa" . "http://melpa.milkbox.net/packages/")))
+(unless (package-installed-p 'erlang)
+  (package-refresh-contents) (package-install 'erlang))
 
 (setq org-archive-location "~/Dropbox/archive.org::From %s")
 
@@ -25,6 +30,7 @@
 (setq load-path (cons "~/.emacs.d/elisp/org-mode" load-path))
 (setq load-path (cons "~/.emacs.d/elisp/org-mode/EXPERIMENTAL" load-path))
 (setq load-path (cons "~/.emacs.d/elisp/org-mode/lisp" load-path))
+(setq load-path (cons "~/.emacs.d/elisp/flx" load-path))
 (setq load-path (cons "~/.emacs.d/elisp/yaml-mode" load-path))
 
 (require 'yaml-mode)
@@ -154,8 +160,10 @@
 (require 'saveplace)
 
 ;; ido
-(require 'ido) 
+(require 'flx-ido)
+
 (ido-mode 'both) ;; for buffers and files
+
 (setq 
   ido-save-directory-list-file "~/.emacs.d/cache/ido.last"
 
@@ -252,10 +260,10 @@
 ;; shell mode customizations
 
 (custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(comint-completion-addsuffix t)
  '(comint-completion-autolist t)
  '(comint-input-ignoredups t)
@@ -263,10 +271,13 @@
  '(comint-scroll-to-bottom-on-input t)
  '(comint-scroll-to-bottom-on-output t)
  '(inhibit-startup-screen t)
+ '(safe-local-variable-values (quote ((erlang-indent-level . 4))))
  '(transient-mark-mode (quote identity)))
 
 ; interpret and use ansi color codes in shell output windows
 (ansi-color-for-comint-mode-on)
+
+(load-theme 'wombat t)
 
 (add-hook 'shell-mode-hook 'n-shell-mode-hook)
 (defun n-shell-mode-hook ()
@@ -276,10 +287,10 @@
   )
 
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  )
 
 (put 'upcase-region 'disabled nil)
