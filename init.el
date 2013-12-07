@@ -24,10 +24,14 @@
 (unless (package-installed-p 'erlang)
   (package-refresh-contents) (package-install 'erlang))
 
-(setq package-archives '(("gnu"
-. "http://elpa.gnu.org/packages/")
-			 ("marmalade" . "http://marmalade-repo.org/packages/")
-			 ("melpa" . "http://melpa.milkbox.net/packages/")))
+(unless (package-installed-p 'yaml-mode)
+  (package-refresh-contents) (package-install 'yaml-mode))
+
+(unless (package-installed-p 'ido)
+  (package-refresh-contents) (package-install 'ido))
+
+(unless (package-installed-p 'flx-ido)
+  (package-refresh-contents) (package-install 'flx-ido))
 
 (setq org-archive-location "~/Dropbox/archive.org::From %s")
 
