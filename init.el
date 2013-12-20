@@ -7,12 +7,10 @@
 
 (require 'package)
 
-;; (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-;; 			 ("marmalade" . "http://marmalade-repo.org/packages/")
-;; 			 ("melpa" . "http://melpa.milkbox.net/packages/")))
-
-(add-to-list 'package-archives
-	     '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+			 ("org" . "http://orgmode.org/elpa/")
+ 			 ("marmalade" . "http://marmalade-repo.org/packages/")
+ 			 ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 (package-initialize)
 (unless (package-installed-p 'scala-mode2)
@@ -24,10 +22,17 @@
 (unless (package-installed-p 'erlang)
   (package-refresh-contents) (package-install 'erlang))
 
-(setq package-archives '(("gnu"
-. "http://elpa.gnu.org/packages/")
-			 ("marmalade" . "http://marmalade-repo.org/packages/")
-			 ("melpa" . "http://melpa.milkbox.net/packages/")))
+(unless (package-installed-p 'yaml-mode)
+  (package-refresh-contents) (package-install 'yaml-mode))
+
+(unless (package-installed-p 'ido)
+  (package-refresh-contents) (package-install 'ido))
+
+(unless (package-installed-p 'org)
+  (package-refresh-contents) (package-install 'org))
+
+(unless (package-installed-p 'flx-ido)
+  (package-refresh-contents) (package-install 'flx-ido))
 
 (setq org-archive-location "~/Dropbox/archive.org::From %s")
 
@@ -35,14 +40,14 @@
 
 (setq load-path (cons "~/.emacs.d" load-path))
 (setq load-path (cons "~/.emacs.d/elisp" load-path))
-(setq load-path (cons "~/.emacs.d/elisp/org-mode" load-path))
-(setq load-path (cons "~/.emacs.d/elisp/org-mode/EXPERIMENTAL" load-path))
-(setq load-path (cons "~/.emacs.d/elisp/org-mode/lisp" load-path))
-(setq load-path (cons "~/.emacs.d/elisp/flx" load-path))
-(setq load-path (cons "~/.emacs.d/elisp/yaml-mode" load-path))
+(setq load-path (cons "~/.emacs.d/elisp/edts" load-path))
 
-(load "find-tags-file")
+(setq load-path (cons  "/usr/local/Cellar/erlang/R16B03/emacs" load-path))
+(setq erlang-root-dir "/usr/local/Cellar/erlang/R16B03")
+(setq exec-path (cons "/usr/local/Cellar/erlang/R16B03/bin" exec-path))
+(require 'erlang-start)
 
+(require 'edts-start)
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
@@ -169,6 +174,7 @@
 (require 'saveplace)
 
 ;; ido
+(require 'ido)
 (require 'flx-ido)
 
 (ido-mode 'both) ;; for buffers and files
