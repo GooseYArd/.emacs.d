@@ -41,6 +41,8 @@
 (setq load-path (cons "~/.emacs.d/elisp/flx" load-path))
 (setq load-path (cons "~/.emacs.d/elisp/yaml-mode" load-path))
 
+(load "find-tags-file")
+
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
@@ -89,8 +91,7 @@
     ;;  tagfile already exists; update it
     (shell-command "global -u && echo 'updated tagfile'")))
 
-;;(setq tags-file-name
-;;           '"~/TAGS")
+(setq tags-file-name '"~/TAGS")
 
 ;;(require 'etags-update)
 
