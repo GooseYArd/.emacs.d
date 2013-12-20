@@ -10,3 +10,6 @@
 [submodule "elisp/flx"]
 	path = elisp/flx
 	url = https://github.com/lewang/flx.git
+[submodule "elisp/edts"]
+	path = elisp/edts
+	url = https://github.com/tjarvstrand/edts.git
