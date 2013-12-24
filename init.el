@@ -34,6 +34,9 @@
 (unless (package-installed-p 'flx-ido)
   (package-refresh-contents) (package-install 'flx-ido))
 
+(unless (package-installed-p 'dtrt-indent)
+  (package-refresh-contents) (package-install 'dtrt-indent))
+
 (setq org-archive-location "~/Dropbox/archive.org::From %s")
 
 ;; (toggle-debug-on-error t)
@@ -47,7 +50,7 @@
 (setq exec-path (cons "/usr/local/Cellar/erlang/R16B03/bin" exec-path))
 (require 'erlang-start)
 
-(require 'edts-start)
+;; (require 'edts-start)
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
@@ -267,6 +270,8 @@
      (require 'dtrt-indent)
      (dtrt-indent-mode t)))
 
+(require 'dtrt-indent)
+(dtrt-indent-mode 1)
 
 ;; end languages
 ;;

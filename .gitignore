@@ -1,5 +1,6 @@
 cache/ido.last
 saveplace
-eshell/history
+eshell
 *~
 elpa
+ac-comphist.dat
