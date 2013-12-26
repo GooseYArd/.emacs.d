@@ -41,7 +41,16 @@
 (unless (package-installed-p 'magit)
   (package-refresh-contents) (package-install 'magit))
 
+(unless (package-installed-p 'ibuffer)
+  (package-refresh-contents) (package-install 'ibuffer))
+
+
 (setq org-archive-location "~/Dropbox/archive.org::From %s")
+
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+;; (scroll-bar-mode -1)
+(blink-cursor-mode -1)
 
 ;; (toggle-debug-on-error t)
 
@@ -158,6 +167,7 @@
 (global-set-key "\C-h" 'backward-delete-char)
 (define-key function-key-map [delete] [deletechar])
 
+(setq visual-line-mode t)
 (setq font-lock-maximum-decoration t)
 (setq compile-command "make")
 
