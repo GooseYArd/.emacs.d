@@ -3,8 +3,6 @@
 ;;      (expand-file-name "~/.emacs.d/elpa/package.el"))
 ;;   (package-initialize))
 
-(setq vc-handled-backends nil) 
-
 (require 'package)
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -15,6 +13,9 @@
 (package-initialize)
 (unless (package-installed-p 'scala-mode2)
   (package-refresh-contents) (package-install 'scala-mode2))
+
+(unless (package-installed-p 'markdown-mode)
+  (package-refresh-contents) (package-install 'markdown-mode))
 
 (unless (package-installed-p 'go-mode)
   (package-refresh-contents) (package-install 'go-mode))
@@ -36,6 +37,9 @@
 
 (unless (package-installed-p 'dtrt-indent)
   (package-refresh-contents) (package-install 'dtrt-indent))
+
+(unless (package-installed-p 'magit)
+  (package-refresh-contents) (package-install 'magit))
 
 (setq org-archive-location "~/Dropbox/archive.org::From %s")
 
@@ -297,7 +301,9 @@
 ; interpret and use ansi color codes in shell output windows
 (ansi-color-for-comint-mode-on)
 
-(load-theme 'wombat t)
+; tango-dark is not bad
+
+(load-theme 'manoj-dark t)
 
 (add-hook 'shell-mode-hook 'n-shell-mode-hook)
 (defun n-shell-mode-hook ()
