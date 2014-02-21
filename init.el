@@ -80,37 +80,6 @@
 ;;; turn on syntax highlighting
 (global-font-lock-mode 1)
 
-(autoload 'gtags-mode "gtags" "" t)
-(setq c-mode-hook
-      '(lambda ()
-	 (gtags-mode 1)
-	 ))
-(setq pascal-mode-hook
-      '(lambda ()
-	 (gtags-mode 1)
-	 ))
-(setq java-mode-hook
-      '(lambda ()
-	 (gtags-mode 1)
-	 ))
-
-(add-hook 'gtags-mode-hook 
-	  (lambda()
-	    (local-set-key (kbd "M-.") 'gtags-find-tag)   ; find a tag, also M-.
-	    (local-set-key (kbd "M-,") 'gtags-find-rtag)))  ; reverse tag
-
-(defun djcb-gtags-create-or-update ()
-  "create or update the gnu global tag file"
-  (interactive)
-  (if (not (= 0 (call-process "global" nil nil nil " -p"))) ; tagfile doesn't exist?
-      (let ((olddir default-directory)
-	    (topdir (read-directory-name  
-		     "gtags: top of source tree:" default-directory)))
-	(cd topdir)
-	(shell-command "gtags && echo 'created tagfile'")
-	(cd olddir)) ; restore   
-    ;;  tagfile already exists; update it
-    (shell-command "global -u && echo 'updated tagfile'")))
 
 (setq tags-file-name '"~/TAGS")
 
@@ -202,7 +171,7 @@
   ido-ignore-buffers ;; ignore these guys
   '("\\` " "^\*Mess" "^\*Back" ".*Completion" "^\*Ido" "^\*trace"
 
-     "^\*compilation" "^\*GTAGS" "^session\.*" "^\*")
+     "^\*compilation" "^\*TAGS" "^session\.*" "^\*")
   ido-work-directory-list '("~/" "~/Desktop" "~/Documents" "~src")
   ido-case-fold  t                 ; be case-insensitive
 
