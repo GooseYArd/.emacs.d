@@ -78,7 +78,6 @@
 
 (global-font-lock-mode 1)
 
-;;; in X, paste at the cursor position, not the mouse position
 (setq mouse-yank-at-point t)
 (setq scroll-bar-mode -1)
 
@@ -140,7 +139,7 @@
   ido-save-directory-list-file "~/.emacs.d/cache/ido.last"
   ido-ignore-buffers ;; ignore these guys
   '("\\` " "^\*Mess" "^\*Back" ".*Completion" "^\*Ido" "^\*trace"
-     "^\*compilation" "^\*GTAGS" "^session\.*" "^\*")
+     "^\*compilation" "^\*TAGS" "^session\.*" "^\*")
   ido-work-directory-list '("~/" "~/Desktop" "~/Documents" "~src")
   ido-case-fold  t                 ; be case-insensitive
   ido-enable-last-directory-history t ; remember last used dirs
