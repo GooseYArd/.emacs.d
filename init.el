@@ -33,6 +33,7 @@
    ido-vertical-mode
    magit
    markdown-mode
+   annoying-arrows-mode
    org
    scala-mode2
    windmove
