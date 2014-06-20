@@ -10,16 +10,16 @@
 (require 'package)
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-			 ("org" . "http://orgmode.org/elpa/")
- 			 ("marmalade" . "http://marmalade-repo.org/packages/")
- 			 ("melpa" . "http://melpa.milkbox.net/packages/")))
+                         ("org" . "http://orgmode.org/elpa/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 (package-initialize)
 
 (mapc
  (lambda (package)
    (or (package-installed-p package)
-       (if (y-or-n-p (format "Package %s is missing. Install it? " package)) 
+       (if (y-or-n-p (format "Package %s is missing. Install it? " package))
            (package-install package))))
  '(dtrt-indent
    desktop
@@ -34,6 +34,7 @@
    magit
    markdown-mode
    org
+   python-mode
    scala-mode2
    windmove
    yaml-mode))
@@ -54,7 +55,7 @@
 (setq guide-key/recursize-key-sequence-flag t)
 (setq guide-key/popup-window-position 'bottom)
 
-(setq org-archive-location "~/Dropbox/archive.org::From %s")
+(setq org-archive-location "~/archive.org::From %s")
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (blink-cursor-mode -1)
@@ -72,6 +73,8 @@
 (require 'erlang-start)
 (require 'yaml-mode)
 
+(add-to-list 'auto-mode-alist '("\\.config$" . erlang-mode))
+
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 (setq visible-bell t)
 (setq-default buffer-file-coding-system 'undecided-unix)
@@ -81,7 +84,74 @@
 (setq mouse-yank-at-point t)
 (setq scroll-bar-mode -1)
 
-(setq tags-file-name '"~/TAGS")
+
+(defvar current-date-time-format "%a %b %d %H:%M:%S %Z %Y"
+  "Format of date to insert with `insert-current-date-time' func
+See help of `format-time-string' for possible replacements")
+
+(defvar current-time-format "%a %H:%M:%S"
+  "Format of date to insert with `insert-current-time' func.
+Note the weekly scope of the command's precision.")
+
+(defun insert-current-date-time ()
+  "insert the current date and time into current buffer.
+Uses `current-date-time-format' for the formatting the date/time."
+       (interactive)
+       (insert "==========\n")
+;       (insert (let () (comment-start)))
+       (insert (format-time-string current-date-time-format (current-time)))
+       (insert "\n")
+       )
+
+(defun insert-current-time ()
+  "insert the current time (1-week scope) into the current buffer."
+       (interactive)
+       (insert (format-time-string current-time-format (current-time)))
+       (insert "\n")
+       )
+
+(global-set-key "\C-c\C-d" 'insert-current-date-time)
+;;(global-set-key "\C-c\C-t" 'insert-current-time)
+
+(require 'xfrp_find_replace_pairs) ; for replace-pairs-region
+(require 'xeu_elisp_util) ; for get-selection-or-unit
+
+(defun escape-quotes ()
+  "Replace 「\"」 by 「\\\"」 in current line or text selection."
+  (interactive)
+  (let* ((bds (get-selection-or-unit 'line))
+         (p1 (elt bds 1))
+         (p2 (elt bds 2)))
+    (replace-pairs-region p1 p2 '(["\"" "\\\""])) ) )
+
+(defun unescape-quotes ()
+  "Replace  「\\\"」 by 「\"」 in current line or text selection."
+  (interactive)
+  (let* ((bds (get-selection-or-unit 'line))
+        (p1 (elt bds 1))
+        (p2 (elt bds 2)))
+    (replace-pairs-region p1 p2 '(["\\\"" "\""])) ) )
+
+(defun find-file-upwards (file-to-find)
+  "Recursively searches each parent directory starting from the default-directory.
+looking for a file with name file-to-find.  Returns the path to it
+or nil if not found."
+  (cl-labels
+      ((find-file-r (path)
+                    (let* ((parent (file-name-directory path))
+                           (possible-file (concat parent file-to-find)))
+                      (cond
+                       ((file-exists-p possible-file) possible-file) ; Found
+                       ;; The parent of ~ is nil and the parent of / is itself.
+                       ;; Thus the terminating condition for not finding the file
+                       ;; accounts for both.
+                       ((or (null parent) (equal parent (directory-file-name parent))) nil) ; Not found
+                       (t (find-file-r (directory-file-name parent))))))) ; Continue
+    (find-file-r default-directory)))
+(let ((my-tags-file (find-file-upwards "TAGS")))
+  (when my-tags-file
+    (message "Loading tags file: %s" my-tags-file)
+    (visit-tags-table my-tags-file)))
 
 (defun revert-buffer-no-confirm ()
   "Revert buffer without confirmation."
@@ -91,8 +161,8 @@
 
 (setq org-todo-keywords
       '((type "TODO(t)" "STARTED(s)" "WAITING(w)" "APPT(a)" "|" "CANCELLED(c)" "DEFERRED(e)" "DONE(d)")
-	(sequence "PROJECT(p)" "|" "FINISHED(f)")
-	(sequence "INVOICE(i)" "SENT(n)" "|" "RCDV(r)")))
+        (sequence "PROJECT(p)" "|" "FINISHED(f)")
+        (sequence "INVOICE(i)" "SENT(n)" "|" "RCDV(r)")))
 
 (which-function-mode t)
 
@@ -100,7 +170,7 @@
 ;; Global Settings
 
 (global-set-key "\M-." 'find-tag)
-(global-set-key "\M-g" 'goto-line) 
+(global-set-key "\M-g" 'goto-line)
 (global-set-key "\C-h" 'backward-delete-char)
 (define-key function-key-map [delete] [deletechar])
 
@@ -122,7 +192,7 @@
 (load "~/.emacs.d/elisp/post.el")
 
 ;; point saving
-(setq save-place-file "~/.emacs.d/saveplace") 
+(setq save-place-file "~/.emacs.d/saveplace")
 (setq-default save-place t)
 (require 'saveplace)
 
@@ -135,7 +205,9 @@
 (ido-vertical-mode 1)
 (ido-mode 'both) ;; for buffers and files
 
-(setq 
+;; -record(varbind, {oid, variabletype, value, org_index}).
+
+(setq
   ido-save-directory-list-file "~/.emacs.d/cache/ido.last"
   ido-ignore-buffers ;; ignore these guys
   '("\\` " "^\*Mess" "^\*Back" ".*Completion" "^\*Ido" "^\*trace"
@@ -157,15 +229,16 @@
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "M-<DELETE>") 'backward-kill-word)
+(global-set-key (kbd "M-_") 'whitespace-cleanup)
 (autoload 'ibuffer "ibuffer" "List buffers." t)
 
-(setq ibuffer-formats '((mark modified read-only " " filename-and-process)))
+(setq ibuffer-formats '((mark modified read-only " " (name 18 18 :left :elide) " "  filename-and-process)))
 
 ;;
 ;; Languages
 ;;
 
-;; C 
+;; C
 
 (fmakunbound 'c-mode)
 (makunbound  'c-mode-map)
@@ -193,7 +266,7 @@
 (global-set-key [(f9)] 'compile)
 (setq compilation-window-height 8)
 
-(add-hook 'c-mode-common-hook 
+(add-hook 'c-mode-common-hook
    (lambda()
      (require 'dtrt-indent)
      (dtrt-indent-mode t)))
@@ -226,6 +299,12 @@
  ;; If there is more than one, they won't work right.
  )
 
+;; make org-mode not suck ass
+(add-hook 'org-shiftup-final-hook 'windmove-up)
+(add-hook 'org-shiftleft-final-hook 'windmove-left)
+(add-hook 'org-shiftdown-final-hook 'windmove-down)
+(add-hook 'org-shiftright-final-hook 'windmove-right)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -240,7 +319,24 @@
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(org-support-shift-select t)
+ '(ido-everywhere t)
  '(safe-local-variable-values (quote ((erlang-indent-level . 4))))
  '(transient-mark-mode (quote identity)))
 
 (put 'upcase-region 'disabled nil)
+
+
+(defun xml-format-region (begin end)
+  "Pretty format XML markup in region. You need to have nxml-mode
+http://www.emacswiki.org/cgi-bin/wiki/NxmlMode installed to do
+this.  The function inserts linebreaks to separate tags that have
+nothing but whitespace between them.  It then indents the markup
+by using nxml's indentation rules."
+  (interactive "r")
+  (save-excursion
+    (xml-mode)
+    (goto-char begin)
+    (while (search-forward-regexp "\>[ \\t]*\<" nil t)
+      (backward-char) (insert "\n"))
+    (indent-region begin end))
+  (message "Ah, much better!"))
