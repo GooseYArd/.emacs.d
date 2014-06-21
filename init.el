@@ -341,3 +341,7 @@ by using nxml's indentation rules."
       (backward-char) (insert "\n"))
     (indent-region begin end))
   (message "Ah, much better!"))
+
+(setq c-default-style "linux"
+      c-basic-offset 8)
+(setq-default c-basic-offset 8)
