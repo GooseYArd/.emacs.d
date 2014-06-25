@@ -38,6 +38,8 @@
    windmove
    yaml-mode))
 
+;; Global Settings
+
 (setq initial-scratch-message "")
 (setq inhibit-startup-message t)
 
@@ -64,8 +66,6 @@
 (require 'xeu_elisp_util) ; for get-selection-or-unit
 
 (if window-system (setq confirm-kill-emacs 'yes-or-no-p))
-
-;; Global Settings
 
 (global-set-key "\M-." 'find-tag)
 (global-set-key "\M-g" 'goto-line)
@@ -110,7 +110,6 @@
 
 
 ;; etags-update
-
 (require 'etags-update)
 (etags-update-mode 1)
 
