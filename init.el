@@ -4,8 +4,8 @@
 ;;   (package-initialize))
 ;; (require 'appearance)
 
-
-(column-number-mode)
+(setq load-path (cons "~/.emacs.d" load-path))
+(setq load-path (cons "~/.emacs.d/elisp" load-path))
 
 (require 'package)
 
@@ -19,8 +19,7 @@
 (mapc
  (lambda (package)
    (or (package-installed-p package)
-       (if (y-or-n-p (format "Package %s is missing. Install it? " package))
-           (package-install package))))
+           (package-install package)))
  '(dtrt-indent
    desktop
    erlang
@@ -36,82 +35,27 @@
    annoying-arrows-mode
    org
    python-mode
-   scala-mode2
    windmove
    yaml-mode))
 
 (setq initial-scratch-message "")
 (setq inhibit-startup-message t)
 
-(global-set-key (kbd "C-c m") 'magit-status)
 (global-set-key (kbd "C-c DEL") 'backward-delete-char-hungry)
 (global-set-key (kbd "C-c d") 'delete-horizontal-space-forward)
 
-(when (fboundp 'windmove-default-keybindngs)
-  (windmove-default-keybindings))
-
-(annoying-arrows-mode)
-
-(require 'guide-key)
-(setq guide-key/guide-key-sequence '("C-x r", "C-x 4", "C-x v", "C-x 8"))
-(guide-key-mode 1)
-(setq guide-key/recursize-key-sequence-flag t)
-(setq guide-key/popup-window-position 'bottom)
-
-(setq org-archive-location "~/archive.org::From %s")
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (blink-cursor-mode -1)
 
 ;; (toggle-debug-on-error t)
 
-(setq load-path (cons "~/.emacs.d" load-path))
-(setq load-path (cons "~/.emacs.d/elisp" load-path))
-(setq load-path (cons  "/usr/local/Cellar/erlang/R16B03/emacs" load-path))
-(setq erlang-root-dir "/usr/local/Cellar/erlang/R16B03")
-(setq exec-path (cons "/usr/local/Cellar/erlang/R16B03/bin" exec-path))
-
-(setq erlang-indent-level 4)
-
-(require 'erlang-start)
-(require 'yaml-mode)
-
-(add-to-list 'auto-mode-alist '("\\.config$" . erlang-mode))
-
-(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 (setq visible-bell t)
 (setq-default buffer-file-coding-system 'undecided-unix)
 
 (global-font-lock-mode 1)
-
 (setq mouse-yank-at-point t)
 (setq scroll-bar-mode -1)
-
-
-(defvar current-date-time-format "%a %b %d %H:%M:%S %Z %Y"
-  "Format of date to insert with `insert-current-date-time' func
-See help of `format-time-string' for possible replacements")
-
-(defvar current-time-format "%a %H:%M:%S"
-  "Format of date to insert with `insert-current-time' func.
-Note the weekly scope of the command's precision.")
-
-(defun insert-current-date-time ()
-  "insert the current date and time into current buffer.
-Uses `current-date-time-format' for the formatting the date/time."
-       (interactive)
-       (insert "==========\n")
-;       (insert (let () (comment-start)))
-       (insert (format-time-string current-date-time-format (current-time)))
-       (insert "\n")
-       )
-
-(defun insert-current-time ()
-  "insert the current time (1-week scope) into the current buffer."
-       (interactive)
-       (insert (format-time-string current-time-format (current-time)))
-       (insert "\n")
-       )
 
 (global-set-key "\C-c\C-d" 'insert-current-date-time)
 ;;(global-set-key "\C-c\C-t" 'insert-current-time)
@@ -119,56 +63,7 @@ Uses `current-date-time-format' for the formatting the date/time."
 (require 'xfrp_find_replace_pairs) ; for replace-pairs-region
 (require 'xeu_elisp_util) ; for get-selection-or-unit
 
-(defun escape-quotes ()
-  "Replace 「\"」 by 「\\\"」 in current line or text selection."
-  (interactive)
-  (let* ((bds (get-selection-or-unit 'line))
-         (p1 (elt bds 1))
-         (p2 (elt bds 2)))
-    (replace-pairs-region p1 p2 '(["\"" "\\\""])) ) )
-
-(defun unescape-quotes ()
-  "Replace  「\\\"」 by 「\"」 in current line or text selection."
-  (interactive)
-  (let* ((bds (get-selection-or-unit 'line))
-        (p1 (elt bds 1))
-        (p2 (elt bds 2)))
-    (replace-pairs-region p1 p2 '(["\\\"" "\""])) ) )
-
-(defun find-file-upwards (file-to-find)
-  "Recursively searches each parent directory starting from the default-directory.
-looking for a file with name file-to-find.  Returns the path to it
-or nil if not found."
-  (cl-labels
-      ((find-file-r (path)
-                    (let* ((parent (file-name-directory path))
-                           (possible-file (concat parent file-to-find)))
-                      (cond
-                       ((file-exists-p possible-file) possible-file) ; Found
-                       ;; The parent of ~ is nil and the parent of / is itself.
-                       ;; Thus the terminating condition for not finding the file
-                       ;; accounts for both.
-                       ((or (null parent) (equal parent (directory-file-name parent))) nil) ; Not found
-                       (t (find-file-r (directory-file-name parent))))))) ; Continue
-    (find-file-r default-directory)))
-(let ((my-tags-file (find-file-upwards "TAGS")))
-  (when my-tags-file
-    (message "Loading tags file: %s" my-tags-file)
-    (visit-tags-table my-tags-file)))
-
-(defun revert-buffer-no-confirm ()
-  "Revert buffer without confirmation."
-  (interactive) (revert-buffer t t))
-
 (if window-system (setq confirm-kill-emacs 'yes-or-no-p))
-
-(setq org-todo-keywords
-      '((type "TODO(t)" "STARTED(s)" "WAITING(w)" "APPT(a)" "|" "CANCELLED(c)" "DEFERRED(e)" "DONE(d)")
-        (sequence "PROJECT(p)" "|" "FINISHED(f)")
-        (sequence "INVOICE(i)" "SENT(n)" "|" "RCDV(r)")))
-
-(which-function-mode t)
-
 
 ;; Global Settings
 
@@ -177,17 +72,64 @@ or nil if not found."
 (global-set-key "\C-h" 'backward-delete-char)
 (define-key function-key-map [delete] [deletechar])
 
-(setq visual-line-mode t)
 (setq font-lock-maximum-decoration t)
 (setq compile-command "make")
 
 (modify-frame-parameters nil '((wait-for-wm . nil)))
 
-(show-paren-mode t)
 
 ;;
 ;; Modes
 ;;
+
+;; misc builtin minors
+(which-function-mode t)
+(show-paren-mode t)
+(setq visual-line-mode t)
+(column-number-mode 1)
+
+;; yaml-mode
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+
+;; erlang
+(require 'erlang-start)
+(setq erlang-indent-level 4)
+(add-to-list 'auto-mode-alist '("\\.config$" . erlang-mode))
+
+;; org-mode
+(setq org-archive-location "~/archive.org::From %s")
+(add-hook 'org-shiftup-final-hook 'windmove-up)
+(add-hook 'org-shiftleft-final-hook 'windmove-left)
+(add-hook 'org-shiftdown-final-hook 'windmove-down)
+(add-hook 'org-shiftright-final-hook 'windmove-right)
+(setq org-todo-keywords
+      '((type "TODO(t)" "STARTED(s)" "WAITING(w)" "APPT(a)" "|" "CANCELLED(c)" "DEFERRED(e)" "DONE(d)")
+        (sequence "PROJECT(p)" "|" "FINISHED(f)")
+        (sequence "INVOICE(i)" "SENT(n)" "|" "RCDV(r)")))
+
+
+;; etags-update
+
+(require 'etags-update)
+(etags-update-mode 1)
+
+;; guide-key
+(require 'guide-key)
+(setq guide-key/guide-key-sequence '("C-x r", "C-x 4", "C-x v", "C-x 8"))
+(guide-key-mode 1)
+(setq guide-key/recursize-key-sequence-flag t)
+(setq guide-key/popup-window-position 'bottom)
+
+;; windmove
+(when (fboundp 'windmove-default-keybindings)
+  (windmove-default-keybindings))
+
+;; annoying-arrows
+(annoying-arrows-mode 1)
+
+;; magit
+(global-set-key (kbd "C-c m") 'magit-status)
 
 ;; Post Mode
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
@@ -203,12 +145,9 @@ or nil if not found."
 (require 'ido)
 (require 'flx-ido)
 (require 'ido-vertical-mode)
-
 (setq ido-use-faces nil)
 (ido-vertical-mode 1)
 (ido-mode 'both) ;; for buffers and files
-
-;; -record(varbind, {oid, variabletype, value, org_index}).
 
 (setq
   ido-save-directory-list-file "~/.emacs.d/cache/ido.last"
@@ -226,7 +165,6 @@ or nil if not found."
   ido-max-prospects 8              ; don't spam my minibuffer
   ido-confirm-unique-completion t) ; wait for RET, even with unique completion
 
-;; when using ido, the confirmation is rather annoying...
 (setq confirm-nonexistent-file-or-buffer nil)
 (setq ido-max-directory-size 100000)
 
@@ -269,6 +207,10 @@ or nil if not found."
 (global-set-key [(f9)] 'compile)
 (setq compilation-window-height 8)
 
+(setq c-default-style "linux"
+      c-basic-offset 8)
+(setq-default c-basic-offset 8)
+
 (add-hook 'c-mode-common-hook
    (lambda()
      (require 'dtrt-indent)
@@ -302,11 +244,6 @@ or nil if not found."
  ;; If there is more than one, they won't work right.
  )
 
-;; make org-mode not suck ass
-(add-hook 'org-shiftup-final-hook 'windmove-up)
-(add-hook 'org-shiftleft-final-hook 'windmove-left)
-(add-hook 'org-shiftdown-final-hook 'windmove-down)
-(add-hook 'org-shiftright-final-hook 'windmove-right)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -327,11 +264,6 @@ or nil if not found."
  '(transient-mark-mode (quote identity)))
 
 (put 'upcase-region 'disabled nil)
-
-
-(defun string-search-and-replace (search replace string)
-  "Replace all instances of SEARCH with REPLACE in STRING."
-  (replace-regexp-in-string (regexp-quote search) replace string t t))
 
 (defun xml-remove-linebreak-literals (beg end)
   (interactive "r")
@@ -360,16 +292,16 @@ by using nxml's indentation rules."
     (indent-region begin end))
   (message "Ah, much better!"))
 
-    (defun whack-whitespace (arg)
-      "Delete all white space from point to the next word.  With prefix ARG
+(defun whack-whitespace (arg)
+  "Delete all white space from point to the next word.  With prefix ARG
     delete across newlines as well.  The only danger in this is that you
     don't have to actually be at the end of a word to make it work.  It
     skips over to the next whitespace and then whacks it all to the next
     word."
-      (interactive "P")
-      (let ((regexp (if arg "[ \t\n]+" "[ \t]+")))
-        (re-search-forward regexp nil t)
-        (replace-match "" nil nil)))
+  (interactive "P")
+  (let ((regexp (if arg "[ \t\n]+" "[ \t]+")))
+    (re-search-forward regexp nil t)
+    (replace-match "" nil nil)))
 
 (defun delete-horizontal-space-forward () ; adapted from `delete-horizontal-space'
   "*Delete all spaces and tabs after point."
@@ -393,3 +325,70 @@ by using nxml's indentation rules."
       (goto-char (point-min))
       (while (re-search-forward "\\s-+" nil t)
         (replace-match " ")))))
+
+(defvar current-date-time-format "%a %b %d %H:%M:%S %Z %Y"
+  "Format of date to insert with `insert-current-date-time' func
+See help of `format-time-string' for possible replacements")
+
+(defvar current-time-format "%a %H:%M:%S"
+  "Format of date to insert with `insert-current-time' func.
+Note the weekly scope of the command's precision.")
+
+(defun insert-current-date-time ()
+  "insert the current date and time into current buffer.
+Uses `current-date-time-format' for the formatting the date/time."
+       (interactive)
+       (insert "==========\n")
+;       (insert (let () (comment-start)))
+       (insert (format-time-string current-date-time-format (current-time)))
+       (insert "\n")
+       )
+
+(defun insert-current-time ()
+  "insert the current time (1-week scope) into the current buffer."
+       (interactive)
+       (insert (format-time-string current-time-format (current-time)))
+       (insert "\n")
+       )
+
+(defun escape-quotes ()
+  "Replace 「\"」 by 「\\\"」 in current line or text selection."
+  (interactive)
+  (let* ((bds (get-selection-or-unit 'line))
+         (p1 (elt bds 1))
+         (p2 (elt bds 2)))
+    (replace-pairs-region p1 p2 '(["\"" "\\\""])) ) )
+
+(defun unescape-quotes ()
+  "Replace  「\\\"」 by 「\"」 in current line or text selection."
+  (interactive)
+  (let* ((bds (get-selection-or-unit 'line))
+        (p1 (elt bds 1))
+        (p2 (elt bds 2)))
+    (replace-pairs-region p1 p2 '(["\\\"" "\""])) ) )
+
+(defun find-file-upwards (file-to-find)
+  "Recursively searches each parent directory starting from the default-directory.
+looking for a file with name file-to-find.  Returns the path to it
+or nil if not found."
+  (cl-labels
+      ((find-file-r (path)
+                    (let* ((parent (file-name-directory path))
+                           (possible-file (concat parent file-to-find)))
+                      (cond
+                       ((file-exists-p possible-file) possible-file) ; Found
+                       ;; The parent of ~ is nil and the parent of / is itself.
+                       ;; Thus the terminating condition for not finding the file
+                       ;; accounts for both.
+                       ((or (null parent) (equal parent (directory-file-name parent))) nil) ; Not found
+                       (t (find-file-r (directory-file-name parent))))))) ; Continue
+    (find-file-r default-directory)))
+(let ((my-tags-file (find-file-upwards "TAGS")))
+  (when my-tags-file
+    (message "Loading tags file: %s" my-tags-file)
+    (visit-tags-table my-tags-file)))
+
+(defun revert-buffer-no-confirm ()
+  "Revert buffer without confirmation."
+  (interactive) (revert-buffer t t))
+
