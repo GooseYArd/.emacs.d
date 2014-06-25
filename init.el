@@ -44,8 +44,10 @@
 (setq inhibit-startup-message t)
 
 (global-set-key (kbd "C-c m") 'magit-status)
+(global-set-key (kbd "C-c DEL") 'backward-delete-char-hungry)
+(global-set-key (kbd "C-c d") 'delete-horizontal-space-forward)
 
-(when (fboundp 'windmove-default-keybindings)
+(when (fboundp 'windmove-default-keybindngs)
   (windmove-default-keybindings))
 
 (annoying-arrows-mode)
@@ -327,6 +329,22 @@ or nil if not found."
 (put 'upcase-region 'disabled nil)
 
 
+(defun string-search-and-replace (search replace string)
+  "Replace all instances of SEARCH with REPLACE in STRING."
+  (replace-regexp-in-string (regexp-quote search) replace string t t))
+
+(defun xml-remove-linebreak-literals (beg end)
+  (interactive "r")
+    (goto-char beg)
+    (while (search-forward "\\r\\n" end t)
+      (replace-match "\n")))
+
+(defun xml-remove-escaping (beg end)
+  (interactive "r")
+    (goto-char beg)
+    (while (re-search-forward "[\\]" end t)
+      (replace-match "")))
+
 (defun xml-format-region (begin end)
   "Pretty format XML markup in region. You need to have nxml-mode
 http://www.emacswiki.org/cgi-bin/wiki/NxmlMode installed to do
@@ -341,3 +359,37 @@ by using nxml's indentation rules."
       (backward-char) (insert "\n"))
     (indent-region begin end))
   (message "Ah, much better!"))
+
+    (defun whack-whitespace (arg)
+      "Delete all white space from point to the next word.  With prefix ARG
+    delete across newlines as well.  The only danger in this is that you
+    don't have to actually be at the end of a word to make it work.  It
+    skips over to the next whitespace and then whacks it all to the next
+    word."
+      (interactive "P")
+      (let ((regexp (if arg "[ \t\n]+" "[ \t]+")))
+        (re-search-forward regexp nil t)
+        (replace-match "" nil nil)))
+
+(defun delete-horizontal-space-forward () ; adapted from `delete-horizontal-space'
+  "*Delete all spaces and tabs after point."
+  (interactive "*")
+  (delete-region (point) (progn (skip-chars-forward " \t") (point))))
+
+(defun backward-delete-char-hungry (arg &optional killp)
+  "*Delete characters backward in \"hungry\" mode.
+    See the documentation of `backward-delete-char-untabify' and
+    `backward-delete-char-untabify-method' for details."
+  (interactive "*p\nP")
+  (let ((backward-delete-char-untabify-method 'hungry))
+    (backward-delete-char-untabify arg killp)))
+
+(defun despace (beg end)
+  "replace all whitespace in the region with single spaces"
+  (interactive "r")
+  (save-excursion
+    (save-restriction
+      (narrow-to-region beg end)
+      (goto-char (point-min))
+      (while (re-search-forward "\\s-+" nil t)
+        (replace-match " ")))))
