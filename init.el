@@ -44,9 +44,6 @@
 (setq initial-scratch-message "")
 (setq inhibit-startup-message t)
 
-(global-set-key (kbd "C-c DEL") 'backward-delete-char-hungry)
-(global-set-key (kbd "C-c d") 'delete-horizontal-space-forward)
-(global-set-key (kbd "C-c >") 'indent-region)
 
 (autoload 'zap-up-to-char "misc"
   "Kill up to, but not including ARGth occurrence of CHAR.")
@@ -73,7 +70,6 @@
 
 (if window-system (setq confirm-kill-emacs 'yes-or-no-p))
 
-(global-set-key "\M-." 'find-tag)
 (global-set-key "\M-g" 'goto-line)
 (global-set-key "\C-h" 'backward-delete-char)
 (define-key function-key-map [delete] [deletechar])
@@ -249,7 +245,7 @@
  ;; If there is more than one, they won't work right.
  )
 
-(require 'edts-start)
+;;(require 'edts-start)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -262,7 +258,7 @@
  '(comint-scroll-show-maximum-output t)
  '(comint-scroll-to-bottom-on-input t)
  '(comint-scroll-to-bottom-on-output t)
- '(edts-man-root "~/.emacs.d/edts/doc/17.1")
+ '(edts-man-root "/home/raym7046/.emacs.d/edts/doc/R15B03-1")
  '(ido-everywhere t)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
@@ -404,3 +400,8 @@ or nil if not found."
      the given regular expression."
   (interactive "r")
   (align-regexp start end (concat "\\(\\s-*\\)" "[[:space:]]") 1 1 t))
+
+(global-set-key "\M-." 'find-tag)
+(global-set-key (kbd "C-c DEL") 'backward-delete-char-hungry)
+(global-set-key (kbd "C-c d") 'delete-horizontal-space-forward)
+(global-set-key (kbd "C-c >") 'indent-region)
