@@ -46,6 +46,11 @@
 
 (global-set-key (kbd "C-c DEL") 'backward-delete-char-hungry)
 (global-set-key (kbd "C-c d") 'delete-horizontal-space-forward)
+(global-set-key (kbd "C-c >") 'indent-region)
+
+(autoload 'zap-up-to-char "misc"
+  "Kill up to, but not including ARGth occurrence of CHAR.")
+(global-set-key (kbd "M-z") 'zap-up-to-char)
 
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -112,7 +117,7 @@
 
 ;; etags-update
 (require 'etags-update)
-(etags-update-mode 1)
+;;(etags-update-mode 1)
 
 ;; guide-key
 (require 'guide-key)
@@ -394,3 +399,8 @@ or nil if not found."
   "Revert buffer without confirmation."
   (interactive) (revert-buffer t t))
 
+(defun align-ws (start end)
+  "Repeat alignment with respect to 
+     the given regular expression."
+  (interactive "r")
+  (align-regexp start end (concat "\\(\\s-*\\)" "[[:space:]]") 1 1 t))
