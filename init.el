@@ -21,6 +21,7 @@
    (or (package-installed-p package)
            (package-install package)))
  '(dtrt-indent
+   edts
    desktop
    erlang
    flx-ido
@@ -243,6 +244,7 @@
  ;; If there is more than one, they won't work right.
  )
 
+(require 'edts-start)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -255,10 +257,11 @@
  '(comint-scroll-show-maximum-output t)
  '(comint-scroll-to-bottom-on-input t)
  '(comint-scroll-to-bottom-on-output t)
+ '(edts-man-root "~/.emacs.d/edts/doc/17.1")
+ '(ido-everywhere t)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(org-support-shift-select t)
- '(ido-everywhere t)
  '(safe-local-variable-values (quote ((erlang-indent-level . 4))))
  '(transient-mark-mode (quote identity)))
 
