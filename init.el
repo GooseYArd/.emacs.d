@@ -40,6 +40,7 @@
 
 ;; Global Settings
 
+(setq large-file-warning-threshold 50000000)
 (setq initial-scratch-message "")
 (setq inhibit-startup-message t)
 
@@ -110,8 +111,8 @@
 
 
 ;; etags-update
-(require 'etags-update)
-(etags-update-mode 1)
+;;(require 'etags-update)
+;;(etags-update-mode 1)
 
 ;; guide-key
 (require 'guide-key)
@@ -189,6 +190,10 @@
 (autoload 'c-mode    "cc-mode" "C Editing Mode" t)
 (autoload 'objc-mode "cc-mode" "Objective-C Editing Mode" t)
 (autoload 'java-mode "cc-mode" "Java Editing Mode" t)
+
+(add-hook 'c-mode-common-hook
+            (lambda()
+                  (c-set-offset 'inextern-lang 0)))
 
 (setq auto-mode-alist
   (append
@@ -391,3 +396,16 @@ or nil if not found."
   "Revert buffer without confirmation."
   (interactive) (revert-buffer t t))
 
+;; (defun delete-leading-whitespace (start end)
+;;   "Delete whitespace at the beginning of each line in region."
+;;   (interactive "*r")
+;;   (save-excursion
+;;     (if (not (bolp)) (forward-line 1))
+;;     (delete-whitespace-rectangle (point) end nil)))
+
+(defun delete-leading-whitespace ()
+  (interactive)
+  (narrow-to-region  (point) (mark))
+  (goto-char (point-min))
+  (replace-regexp "^[\t ]*" "")
+  (widen))
