@@ -41,6 +41,7 @@
 
 ;; Global Settings
 
+(setq large-file-warning-threshold 50000000)
 (setq initial-scratch-message "")
 (setq inhibit-startup-message t)
 
@@ -112,7 +113,7 @@
 
 
 ;; etags-update
-(require 'etags-update)
+;;(require 'etags-update)
 ;;(etags-update-mode 1)
 
 ;; guide-key
@@ -191,6 +192,10 @@
 (autoload 'c-mode    "cc-mode" "C Editing Mode" t)
 (autoload 'objc-mode "cc-mode" "Objective-C Editing Mode" t)
 (autoload 'java-mode "cc-mode" "Java Editing Mode" t)
+
+(add-hook 'c-mode-common-hook
+            (lambda()
+                  (c-set-offset 'inextern-lang 0)))
 
 (setq auto-mode-alist
   (append
@@ -405,3 +410,11 @@ or nil if not found."
 (global-set-key (kbd "C-c DEL") 'backward-delete-char-hungry)
 (global-set-key (kbd "C-c d") 'delete-horizontal-space-forward)
 (global-set-key (kbd "C-c >") 'indent-region)
+
+(defun delete-leading-whitespace ()
+  (interactive)
+  (narrow-to-region  (point) (mark))
+  (goto-char (point-min))
+  (replace-regexp "^[\t ]*" "")
+  (widen))
+
