@@ -233,7 +233,8 @@
 ; interpret and use ansi color codes in shell output windows
 (ansi-color-for-comint-mode-on)
 
-(load-theme 'manoj-dark t)
+;; (load-theme 'manoj-dark t)
+(load-theme 'whiteboard t)
 
 (add-hook 'shell-mode-hook 'n-shell-mode-hook)
 (defun n-shell-mode-hook ()
@@ -249,7 +250,7 @@
  ;; If there is more than one, they won't work right.
  )
 
-(require 'edts-start)
+;;(require 'edts-start)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
