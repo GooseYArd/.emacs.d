@@ -80,6 +80,7 @@
 
 (modify-frame-parameters nil '((wait-for-wm . nil)))
 
+(add-hook 'before-save-hook 'whitespace-cleanup)
 
 ;;
 ;; Modes
@@ -234,7 +235,7 @@
 ; interpret and use ansi color codes in shell output windows
 (ansi-color-for-comint-mode-on)
 
-;; (load-theme 'manoj-dark t)
+;;(load-theme 'manoj-dark t)
 (load-theme 'whiteboard t)
 
 (add-hook 'shell-mode-hook 'n-shell-mode-hook)
