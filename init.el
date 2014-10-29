@@ -4,7 +4,6 @@
 ;;   (package-initialize))
 ;; (require 'appearance)
 
-(setq load-path (cons "~/.emacs.d" load-path))
 (setq load-path (cons "~/.emacs.d/elisp" load-path))
 
 (require 'package)
@@ -403,7 +402,7 @@ or nil if not found."
   (interactive) (revert-buffer t t))
 
 (defun align-ws (start end)
-  "Repeat alignment with respect to 
+  "Repeat alignment with respect to
      the given regular expression."
   (interactive "r")
   (align-regexp start end (concat "\\(\\s-*\\)" "[[:space:]]") 1 1 t))
@@ -419,4 +418,3 @@ or nil if not found."
   (goto-char (point-min))
   (replace-regexp "^[\t ]*" "")
   (widen))
-
