@@ -19,13 +19,8 @@
  (lambda (package)
    (or (package-installed-p package)
            (package-install package)))
- '(dtrt-indent
-   edts
-   desktop
-   erlang
-   flx-ido
+ '(dtrt-indent flx-ido
    git-commit-mode
-   go-mode
    guide-key
    ibuffer
    ido
@@ -95,10 +90,6 @@
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
-;; erlang
-(require 'erlang-start)
-(setq erlang-indent-level 4)
-(add-to-list 'auto-mode-alist '("\\.config$" . erlang-mode))
 
 ;; org-mode
 (setq org-archive-location "~/archive.org::From %s")
@@ -235,7 +226,7 @@
 (ansi-color-for-comint-mode-on)
 
 ;;(load-theme 'manoj-dark t)
-(load-theme 'whiteboard t)
+;;(load-theme 'whiteboard t)
 
 (add-hook 'shell-mode-hook 'n-shell-mode-hook)
 (defun n-shell-mode-hook ()
@@ -269,7 +260,6 @@
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(org-support-shift-select t)
- '(safe-local-variable-values (quote ((erlang-indent-level . 4))))
  '(transient-mark-mode (quote identity)))
 
 (put 'upcase-region 'disabled nil)
