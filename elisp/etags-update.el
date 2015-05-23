@@ -186,7 +186,7 @@ the file is not already in TAGS, maybe add it."
         (assert (get-file-buffer tags-file-full-name)))
       (let* ((file              (buffer-file-name (current-buffer)))
              (file-in-tags      (etu/file-in-tags file))
-             (cmd               (concat "etags-update.pl " tags-file-name " " file-in-tags))
+             (cmd               (concat "~/bin/etags-update.pl " tags-file-name " " file-in-tags))
              (proc-name         "etags-update")
              (default-directory (etu/tags-file-dir)))
         (if (string= file tags-file-name)

@@ -9,17 +9,23 @@
 (require 'package)
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("org" . "http://orgmode.org/elpa/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/")))
+			 ("org" . "http://orgmode.org/elpa/")
+			 ("marmalade" . "http://marmalade-repo.org/packages/")
+			 ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 (package-initialize)
 
 (mapc
  (lambda (package)
    (or (package-installed-p package)
-           (package-install package)))
- '(dtrt-indent flx-ido
+	   (package-install package)))
+ '(
+   highlight-symbol
+   flyspell
+   flymake
+   pymacs
+   dtrt-indent
+   flx-ido
    git-commit-mode
    guide-key
    ibuffer
@@ -29,8 +35,9 @@
    markdown-mode
    annoying-arrows-mode
    org
-   python-mode
    windmove
+   python-pep8
+   pymacs
    yaml-mode))
 
 ;; Global Settings
@@ -44,8 +51,9 @@
   "Kill up to, but not including ARGth occurrence of CHAR.")
 (global-set-key (kbd "M-z") 'zap-up-to-char)
 
+(if window-system (setq confirm-kill-emacs 'yes-or-no-p))
 (tool-bar-mode -1)
-(menu-bar-mode -1)
+;;(menu-bar-mode -1)
 (blink-cursor-mode -1)
 
 ;; (toggle-debug-on-error t)
@@ -56,14 +64,13 @@
 (global-font-lock-mode 1)
 (setq mouse-yank-at-point t)
 (setq scroll-bar-mode -1)
+(setq vc-follow-symlinks 1)
 
 (global-set-key "\C-c\C-d" 'insert-current-date-time)
 ;;(global-set-key "\C-c\C-t" 'insert-current-time)
 
 (require 'xfrp_find_replace_pairs) ; for replace-pairs-region
 (require 'xeu_elisp_util) ; for get-selection-or-unit
-
-(if window-system (setq confirm-kill-emacs 'yes-or-no-p))
 
 (global-set-key "\M-g" 'goto-line)
 (global-set-key "\C-h" 'backward-delete-char)
@@ -86,6 +93,28 @@
 (setq visual-line-mode t)
 (column-number-mode 1)
 
+;; http://www.saltycrane.com/blog/2010/05/my-emacs-python-environment/
+;; python-mode
+(setq pdb-path '~/bin/pdb gud-pdb-command-name (symbol-name pdb-path))
+;;(require 'pymacs)
+;;(pymacs-load "ropemacs" "rope-")
+;;(setq ropemacs-enable-autoimport t)
+
+(setq ipython-command "/usr/local/bin/ipython")
+;;(setq python-python-command "/usr/local/bin/ipython console")
+;;(setq python-shell-interpreter "/usr/local/bin/ipython console")
+(require 'ipython)
+
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/elpa/auto-complete-20150408.1132/dict")
+(ac-config-default)
+
+(defadvice pdb (before gud-query-cmdline activate)
+  "Provide a better default command line when called interactively."
+  (interactive
+   (list (gud-query-cmdline pdb-path
+			    (file-name-nondirectory buffer-file-name)))))
+
 ;; yaml-mode
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
@@ -99,13 +128,15 @@
 (add-hook 'org-shiftright-final-hook 'windmove-right)
 (setq org-todo-keywords
       '((type "TODO(t)" "STARTED(s)" "WAITING(w)" "APPT(a)" "|" "CANCELLED(c)" "DEFERRED(e)" "DONE(d)")
-        (sequence "PROJECT(p)" "|" "FINISHED(f)")
-        (sequence "INVOICE(i)" "SENT(n)" "|" "RCDV(r)")))
+	(sequence "PROJECT(p)" "|" "FINISHED(f)")
+	(sequence "INVOICE(i)" "SENT(n)" "|" "RCDV(r)")))
 
 
 ;; etags-update
-;;(require 'etags-update)
-;;(etags-update-mode 1)
+(require 'etags-update)
+(etags-update-mode 1)
+(setq etu/append-file-action 'add)
+(setq tags-revert-without-query 't)
 
 ;; guide-key
 (require 'guide-key)
@@ -185,8 +216,8 @@
 (autoload 'java-mode "cc-mode" "Java Editing Mode" t)
 
 (add-hook 'c-mode-common-hook
-            (lambda()
-                  (c-set-offset 'inextern-lang 0)))
+	    (lambda()
+		  (c-set-offset 'inextern-lang 0)))
 
 (setq auto-mode-alist
   (append
@@ -203,6 +234,27 @@
 (global-font-lock-mode 1)
 (global-set-key [(f9)] 'compile)
 (setq compilation-window-height 8)
+
+(when (eq system-type 'darwin)
+
+  ;; default Latin font (e.g. Consolas)
+  (set-face-attribute 'default nil :family "M+ 1m")
+  (custom-set-faces '(default ((t (:height 120 :family "M+ 1m")))))
+
+  ;; default font size (point * 10)
+  ;;
+  ;; WARNING!  Depending on the default font,
+  ;; if the size is not supported very well, the frame will be clipped
+  ;; so that the beginning of the buffer may not be visible correctly.
+  (set-face-attribute 'default nil :height 180)
+
+  ;; use specific font for Korean charset.
+  ;; if you want to use different font size for specific charset,
+  ;; add :size POINT-SIZE in the font-spec.
+  (set-fontset-font t 'hangul (font-spec :name "NanumGothicCoding"))
+
+  ;; you may want to add different for other charset in this way.
+  )
 
 (setq c-default-style "linux"
       c-basic-offset 8)
@@ -323,7 +375,7 @@ by using nxml's indentation rules."
       (narrow-to-region beg end)
       (goto-char (point-min))
       (while (re-search-forward "\\s-+" nil t)
-        (replace-match " ")))))
+	(replace-match " ")))))
 
 (defvar current-date-time-format "%a %b %d %H:%M:%S %Z %Y"
   "Format of date to insert with `insert-current-date-time' func
@@ -354,16 +406,16 @@ Uses `current-date-time-format' for the formatting the date/time."
   "Replace 「\"」 by 「\\\"」 in current line or text selection."
   (interactive)
   (let* ((bds (get-selection-or-unit 'line))
-         (p1 (elt bds 1))
-         (p2 (elt bds 2)))
+	 (p1 (elt bds 1))
+	 (p2 (elt bds 2)))
     (replace-pairs-region p1 p2 '(["\"" "\\\""])) ) )
 
 (defun unescape-quotes ()
   "Replace  「\\\"」 by 「\"」 in current line or text selection."
   (interactive)
   (let* ((bds (get-selection-or-unit 'line))
-        (p1 (elt bds 1))
-        (p2 (elt bds 2)))
+	(p1 (elt bds 1))
+	(p2 (elt bds 2)))
     (replace-pairs-region p1 p2 '(["\\\"" "\""])) ) )
 
 (defun find-file-upwards (file-to-find)
@@ -372,15 +424,15 @@ looking for a file with name file-to-find.  Returns the path to it
 or nil if not found."
   (cl-labels
       ((find-file-r (path)
-                    (let* ((parent (file-name-directory path))
-                           (possible-file (concat parent file-to-find)))
-                      (cond
-                       ((file-exists-p possible-file) possible-file) ; Found
-                       ;; The parent of ~ is nil and the parent of / is itself.
-                       ;; Thus the terminating condition for not finding the file
-                       ;; accounts for both.
-                       ((or (null parent) (equal parent (directory-file-name parent))) nil) ; Not found
-                       (t (find-file-r (directory-file-name parent))))))) ; Continue
+		    (let* ((parent (file-name-directory path))
+			   (possible-file (concat parent file-to-find)))
+		      (cond
+		       ((file-exists-p possible-file) possible-file) ; Found
+		       ;; The parent of ~ is nil and the parent of / is itself.
+		       ;; Thus the terminating condition for not finding the file
+		       ;; accounts for both.
+		       ((or (null parent) (equal parent (directory-file-name parent))) nil) ; Not found
+		       (t (find-file-r (directory-file-name parent))))))) ; Continue
     (find-file-r default-directory)))
 (let ((my-tags-file (find-file-upwards "TAGS")))
   (when my-tags-file
