@@ -5,25 +5,25 @@
 ;; (require 'appearance)
 
 (setq load-path (cons "~/.emacs.d/elisp" load-path))
+(setq load-path (cons "~/.emacs.d/elisp/python-mode.el-6.2.0" load-path))
 
 (require 'package)
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-			 ("org" . "http://orgmode.org/elpa/")
-			 ("marmalade" . "http://marmalade-repo.org/packages/")
-			 ("melpa" . "http://melpa.milkbox.net/packages/")))
+                         ("org" . "http://orgmode.org/elpa/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 (package-initialize)
 
 (mapc
  (lambda (package)
    (or (package-installed-p package)
-	   (package-install package)))
- '(
-   highlight-symbol
+           (package-install package)))
+ '(highlight-symbol
+   erlang
    flyspell
    flymake
-   pymacs
    dtrt-indent
    flx-ido
    git-commit-mode
@@ -36,9 +36,9 @@
    annoying-arrows-mode
    org
    windmove
-   python-pep8
-   pymacs
    yaml-mode))
+
+;;   python-pep8
 
 ;; Global Settings
 
@@ -87,6 +87,80 @@
 ;; Modes
 ;;
 
+
+(when (load "flymake" t)
+ (defun flymake-pylint-init ()
+   (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                      'flymake-create-temp-inplace))
+          (local-file (file-relative-name
+                       temp-file
+                       (file-name-directory buffer-file-name))))
+         (list "pep8" (list "--repeat" local-file))))
+
+ (add-to-list 'flymake-allowed-file-name-masks
+              '("\\.py\\'" flymake-pylint-init)))
+
+(defun my-flymake-show-help ()
+  (when (get-char-property (point) 'flymake-overlay)
+    (let ((help (get-char-property (point) 'help-echo)))
+      (if help (message "%s" help)))))
+
+(add-hook 'post-command-hook 'my-flymake-show-help)
+
+
+;; erlang
+;;(require 'erlang-start)
+(setq erlang-indent-level 4)
+(add-to-list 'auto-mode-alist '("\\.config$" . erlang-mode))
+'(safe-local-variable-values (quote ((erlang-indent-level . 4))))
+(setq erlang-root-dir "/usr/local/lib/erlang")
+
+(if
+    (not (boundp 'erlang-root-dir))
+    (message "Skipping erlang-mode: erlang-root-dir not defined. To hook up erlang mode, set erlang-root-dir in your .emacs file before the call to 'require my-config'.")
+  (progn
+    (set 'erlang-bin (concat erlang-root-dir "/bin/"))
+    (set 'erlang-lib (concat erlang-root-dir "/lib/"))
+    (if
+        (not (boundp 'erlang-mode-path))
+        (set 'erlang-mode-path
+             (concat
+              erlang-lib
+              (file-name-completion "tools-" erlang-lib)
+              "emacs/erlang.el")))
+    (if
+        (and
+         (file-readable-p erlang-mode-path)
+         (file-readable-p erlang-bin))
+        (progn
+          (message "Setting up erlang-mode")
+          (set 'exec-path (cons erlang-bin exec-path))
+          (set 'load-path (cons
+                           (concat
+                            erlang-lib
+                            (file-name-completion "tools-" erlang-lib)
+                            "emacs")
+                           load-path))
+          (set 'load-path (cons (file-name-directory erlang-mode-path) load-path))
+          (require 'erlang-start)
+          (require 'erlang-flymake)
+          (require 'erlang-eunit)
+
+          (add-hook 'erlang-mode-hook
+                    (lambda ()
+                      (setq inferior-erlang-machine-options
+                            '(
+                              "-sname" "emacs"
+                              "-pz" "ebin deps/*/ebin apps/*/ebin"
+                              "-boot" "start_sasl"
+                              ))
+                      (imenu-add-to-menubar "imenu"))))
+      (message "Skipping erlang-mode: %s and/or %s not readable" erlang-bin erlang-mode-path)
+      )
+    )
+  )
+(provide 'erlang)
+
 ;; misc builtin minors
 (which-function-mode t)
 (show-paren-mode t)
@@ -96,6 +170,9 @@
 ;; http://www.saltycrane.com/blog/2010/05/my-emacs-python-environment/
 ;; python-mode
 (setq pdb-path '~/bin/pdb gud-pdb-command-name (symbol-name pdb-path))
+(require 'python-mode)
+(setq py-shell-name "/usr/local/bin/python2.7")
+
 ;;(require 'pymacs)
 ;;(pymacs-load "ropemacs" "rope-")
 ;;(setq ropemacs-enable-autoimport t)
@@ -103,21 +180,24 @@
 (setq ipython-command "/usr/local/bin/ipython")
 ;;(setq python-python-command "/usr/local/bin/ipython console")
 ;;(setq python-shell-interpreter "/usr/local/bin/ipython console")
-(require 'ipython)
+;;(require 'ipython)
 
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/elpa/auto-complete-20150408.1132/dict")
-(ac-config-default)
+(define-key python-mode-map (kbd "TAB") 'py-indent-line)
+
+;;(require 'auto-complete-config)
+;;(add-to-list 'ac-dictionary-directories "~/.emacs.d/elpa/auto-complete-20150408.1132/dict")
+;;(ac-config-default)
 
 (defadvice pdb (before gud-query-cmdline activate)
   "Provide a better default command line when called interactively."
   (interactive
    (list (gud-query-cmdline pdb-path
-			    (file-name-nondirectory buffer-file-name)))))
+                            (file-name-nondirectory buffer-file-name)))))
 
 ;; yaml-mode
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+
 
 
 ;; org-mode
@@ -128,8 +208,8 @@
 (add-hook 'org-shiftright-final-hook 'windmove-right)
 (setq org-todo-keywords
       '((type "TODO(t)" "STARTED(s)" "WAITING(w)" "APPT(a)" "|" "CANCELLED(c)" "DEFERRED(e)" "DONE(d)")
-	(sequence "PROJECT(p)" "|" "FINISHED(f)")
-	(sequence "INVOICE(i)" "SENT(n)" "|" "RCDV(r)")))
+        (sequence "PROJECT(p)" "|" "FINISHED(f)")
+        (sequence "INVOICE(i)" "SENT(n)" "|" "RCDV(r)")))
 
 
 ;; etags-update
@@ -154,6 +234,7 @@
 
 ;; magit
 (global-set-key (kbd "C-c m") 'magit-status)
+(setq magit-last-seen-setup-instructions "1.4.0")
 
 ;; Post Mode
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
@@ -216,8 +297,8 @@
 (autoload 'java-mode "cc-mode" "Java Editing Mode" t)
 
 (add-hook 'c-mode-common-hook
-	    (lambda()
-		  (c-set-offset 'inextern-lang 0)))
+            (lambda()
+                  (c-set-offset 'inextern-lang 0)))
 
 (setq auto-mode-alist
   (append
@@ -251,7 +332,7 @@
   ;; use specific font for Korean charset.
   ;; if you want to use different font size for specific charset,
   ;; add :size POINT-SIZE in the font-spec.
-  (set-fontset-font t 'hangul (font-spec :name "NanumGothicCoding"))
+  ;;(set-fontset-font t 'hangul (font-spec :name "NanumGothicCoding"))
 
   ;; you may want to add different for other charset in this way.
   )
@@ -294,8 +375,6 @@
  ;; If there is more than one, they won't work right.
  )
 
-;;(require 'edts-start)
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -307,7 +386,7 @@
  '(comint-scroll-show-maximum-output t)
  '(comint-scroll-to-bottom-on-input t)
  '(comint-scroll-to-bottom-on-output t)
- '(edts-man-root "/home/raym7046/.emacs.d/edts/doc/R15B03-1")
+ '(edts-man-root "~/.emacs.d/edts/doc/R15B03-1")
  '(ido-everywhere t)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
@@ -315,6 +394,12 @@
  '(transient-mark-mode (quote identity)))
 
 (put 'upcase-region 'disabled nil)
+
+(defun pylogsnip ()
+  "insert some log handling crap"
+  (interactive)
+  (insert-file-contents "~/.emacs.d/python_log_snippet")
+  )
 
 (defun xml-remove-linebreak-literals (beg end)
   (interactive "r")
@@ -375,7 +460,7 @@ by using nxml's indentation rules."
       (narrow-to-region beg end)
       (goto-char (point-min))
       (while (re-search-forward "\\s-+" nil t)
-	(replace-match " ")))))
+        (replace-match " ")))))
 
 (defvar current-date-time-format "%a %b %d %H:%M:%S %Z %Y"
   "Format of date to insert with `insert-current-date-time' func
@@ -406,16 +491,16 @@ Uses `current-date-time-format' for the formatting the date/time."
   "Replace 「\"」 by 「\\\"」 in current line or text selection."
   (interactive)
   (let* ((bds (get-selection-or-unit 'line))
-	 (p1 (elt bds 1))
-	 (p2 (elt bds 2)))
+         (p1 (elt bds 1))
+         (p2 (elt bds 2)))
     (replace-pairs-region p1 p2 '(["\"" "\\\""])) ) )
 
 (defun unescape-quotes ()
   "Replace  「\\\"」 by 「\"」 in current line or text selection."
   (interactive)
   (let* ((bds (get-selection-or-unit 'line))
-	(p1 (elt bds 1))
-	(p2 (elt bds 2)))
+        (p1 (elt bds 1))
+        (p2 (elt bds 2)))
     (replace-pairs-region p1 p2 '(["\\\"" "\""])) ) )
 
 (defun find-file-upwards (file-to-find)
@@ -424,15 +509,15 @@ looking for a file with name file-to-find.  Returns the path to it
 or nil if not found."
   (cl-labels
       ((find-file-r (path)
-		    (let* ((parent (file-name-directory path))
-			   (possible-file (concat parent file-to-find)))
-		      (cond
-		       ((file-exists-p possible-file) possible-file) ; Found
-		       ;; The parent of ~ is nil and the parent of / is itself.
-		       ;; Thus the terminating condition for not finding the file
-		       ;; accounts for both.
-		       ((or (null parent) (equal parent (directory-file-name parent))) nil) ; Not found
-		       (t (find-file-r (directory-file-name parent))))))) ; Continue
+                    (let* ((parent (file-name-directory path))
+                           (possible-file (concat parent file-to-find)))
+                      (cond
+                       ((file-exists-p possible-file) possible-file) ; Found
+                       ;; The parent of ~ is nil and the parent of / is itself.
+                       ;; Thus the terminating condition for not finding the file
+                       ;; accounts for both.
+                       ((or (null parent) (equal parent (directory-file-name parent))) nil) ; Not found
+                       (t (find-file-r (directory-file-name parent))))))) ; Continue
     (find-file-r default-directory)))
 (let ((my-tags-file (find-file-upwards "TAGS")))
   (when my-tags-file
