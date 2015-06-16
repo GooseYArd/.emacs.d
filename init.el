@@ -19,24 +19,7 @@
 (mapc
  (lambda (package)
    (or (package-installed-p package)
-           (package-install package)))
- '(highlight-symbol
-   erlang
-   flyspell
-   flymake
-   dtrt-indent
-   flx-ido
-   git-commit-mode
-   guide-key
-   ibuffer
-   ido
-   ido-vertical-mode
-   magit
-   markdown-mode
-   annoying-arrows-mode
-   org
-   windmove
-   yaml-mode))
+           (package-install package))) '(highlight-symbol erlang flyspell python-mode flymake dtrt-indent flx-ido git-commit-mode guide-key ibuffer ido ido-vertical-mode magit markdown-mode annoying-arrows-mode org windmove yaml-mode))
 
 ;;   python-pep8
 
@@ -135,7 +118,7 @@
 (setq erlang-indent-level 4)
 (add-to-list 'auto-mode-alist '("\\.config$" . erlang-mode))
 '(safe-local-variable-values (quote ((erlang-indent-level . 4))))
-(setq erlang-root-dir "/usr/local/lib/erlang")
+;;(setq erlang-root-dir "/usr/local/lib/erlang")
 
 (if
     (not (boundp 'erlang-root-dir))
@@ -296,11 +279,13 @@
 (setq ido-max-directory-size 100000)
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
+(autoload 'ibuffer "ibuffer" "List buffers." t)
+(setq ibuffer-never-show-regexps '("\\` " "^\*Mess" "^\*Back" ".*Completion" "^\*Ido" "^\*trace" "^\*compilation" "^\*TAGS" "^session\.*" "^\*"))
+(setq ibuffer-formats '((mark modified read-only " " (name 18 18 :left :elide) " "  filename-and-process)))
+
 (global-set-key (kbd "M-<DELETE>") 'backward-kill-word)
 (global-set-key (kbd "M-_") 'whitespace-cleanup)
-(autoload 'ibuffer "ibuffer" "List buffers." t)
 
-(setq ibuffer-formats '((mark modified read-only " " (name 18 18 :left :elide) " "  filename-and-process)))
 
 ;;
 ;; Languages
