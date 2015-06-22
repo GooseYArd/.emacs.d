@@ -112,6 +112,7 @@
 
 (add-hook 'post-command-hook 'my-flymake-show-help)
 
+(add-to-list 'auto-mode-alist '("\\.mak.in\\'" . makefile-mode))
 
 ;; erlang
 ;;(require 'erlang-start)
