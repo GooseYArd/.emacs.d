@@ -19,7 +19,7 @@
 (mapc
  (lambda (package)
    (or (package-installed-p package)
-           (package-install package))) '(highlight-symbol erlang flyspell python-mode flymake dtrt-indent flx-ido git-commit-mode guide-key ibuffer ido ido-vertical-mode magit markdown-mode annoying-arrows-mode org windmove yaml-mode))
+           (package-install package))) '(highlight-symbol erlang flyspell python-mode flymake dtrt-indent flx-ido guide-key ibuffer ido ido-vertical-mode magit markdown-mode annoying-arrows-mode org windmove yaml-mode))
 
 ;;   python-pep8
 
@@ -64,7 +64,7 @@
 
 (modify-frame-parameters nil '((wait-for-wm . nil)))
 
-(add-hook 'before-save-hook 'whitespace-cleanup)
+;;(add-hook 'before-save-hook 'whitespace-cleanup)
 
 ;; make emacsclient split windows when visiting multiple files
 (defvar server-visit-files-custom-find:buffer-count)
