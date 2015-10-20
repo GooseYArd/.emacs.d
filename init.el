@@ -5,7 +5,6 @@
 ;; (require 'appearance)
 
 (setq load-path (cons "~/.emacs.d/elisp" load-path))
-(setq load-path (cons "~/.emacs.d/elisp/python-mode.el-6.2.0" load-path))
 
 (require 'package)
 
@@ -39,7 +38,7 @@
 ;;(menu-bar-mode -1)
 (blink-cursor-mode -1)
 
-;; (toggle-debug-on-error t)
+;;(toggle-debug-on-quit t)
 
 (setq visible-bell t)
 (setq-default buffer-file-coding-system 'undecided-unix)
@@ -92,83 +91,10 @@
 ;; Modes
 ;;
 
-
-(when (load "flymake" t)
- (defun flymake-pylint-init ()
-   (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                      'flymake-create-temp-inplace))
-          (local-file (file-relative-name
-                       temp-file
-                       (file-name-directory buffer-file-name))))
-         (list "pep8" (list "--repeat" local-file))))
-
- (add-to-list 'flymake-allowed-file-name-masks
-              '("\\.py\\'" flymake-pylint-init)))
-
-(defun my-flymake-show-help ()
-  (when (get-char-property (point) 'flymake-overlay)
-    (let ((help (get-char-property (point) 'help-echo)))
-      (if help (message "%s" help)))))
-
-(add-hook 'post-command-hook 'my-flymake-show-help)
-
 (add-to-list 'auto-mode-alist '("\\.mak.in\\'" . makefile-mode))
 
-;; erlang
-;;(require 'erlang-start)
-(setq erlang-indent-level 4)
-(add-to-list 'auto-mode-alist '("\\.config$" . erlang-mode))
-'(safe-local-variable-values (quote ((erlang-indent-level . 4))))
-;;(setq erlang-root-dir "/usr/local/lib/erlang")
-
-(if
-    (not (boundp 'erlang-root-dir))
-    (message "Skipping erlang-mode: erlang-root-dir not defined. To hook up erlang mode, set erlang-root-dir in your .emacs file before the call to 'require my-config'.")
-  (progn
-    (set 'erlang-bin (concat erlang-root-dir "/bin/"))
-    (set 'erlang-lib (concat erlang-root-dir "/lib/"))
-    (if
-        (not (boundp 'erlang-mode-path))
-        (set 'erlang-mode-path
-             (concat
-              erlang-lib
-              (file-name-completion "tools-" erlang-lib)
-              "emacs/erlang.el")))
-    (if
-        (and
-         (file-readable-p erlang-mode-path)
-         (file-readable-p erlang-bin))
-        (progn
-          (message "Setting up erlang-mode")
-          (set 'exec-path (cons erlang-bin exec-path))
-          (set 'load-path (cons
-                           (concat
-                            erlang-lib
-                            (file-name-completion "tools-" erlang-lib)
-                            "emacs")
-                           load-path))
-          (set 'load-path (cons (file-name-directory erlang-mode-path) load-path))
-          (require 'erlang-start)
-          (require 'erlang-flymake)
-          (require 'erlang-eunit)
-
-          (add-hook 'erlang-mode-hook
-                    (lambda ()
-                      (setq inferior-erlang-machine-options
-                            '(
-                              "-sname" "emacs"
-                              "-pz" "ebin deps/*/ebin apps/*/ebin"
-                              "-boot" "start_sasl"
-                              ))
-                      (imenu-add-to-menubar "imenu"))))
-      (message "Skipping erlang-mode: %s and/or %s not readable" erlang-bin erlang-mode-path)
-      )
-    )
-  )
-(provide 'erlang)
-
 ;; misc builtin minors
-(which-function-mode t)
+;;(which-function-mode t)
 (show-paren-mode t)
 (setq visual-line-mode t)
 (column-number-mode 1)
@@ -176,19 +102,19 @@
 ;; http://www.saltycrane.com/blog/2010/05/my-emacs-python-environment/
 ;; python-mode
 (setq pdb-path '~/bin/pdb gud-pdb-command-name (symbol-name pdb-path))
-(require 'python-mode)
-(setq py-shell-name "/usr/local/bin/python2.7")
+;;(require 'python-mode)
+;;(setq py-shell-name "/usr/local/bin/python2.7")
 
 ;;(require 'pymacs)
 ;;(pymacs-load "ropemacs" "rope-")
 ;;(setq ropemacs-enable-autoimport t)
 
-(setq ipython-command "/usr/local/bin/ipython")
+;;(setq ipython-command "/usr/local/bin/ipython")
 ;;(setq python-python-command "/usr/local/bin/ipython console")
 ;;(setq python-shell-interpreter "/usr/local/bin/ipython console")
 ;;(require 'ipython)
 
-(define-key python-mode-map (kbd "TAB") 'py-indent-line)
+;; (define-key python-mode-map (kbd "TAB") 'python-indent-guess-indent-offset)
 
 ;;(require 'auto-complete-config)
 ;;(add-to-list 'ac-dictionary-directories "~/.emacs.d/elpa/auto-complete-20150408.1132/dict")
@@ -203,8 +129,6 @@
 ;; yaml-mode
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-
-
 
 ;; org-mode
 (setq org-archive-location "~/archive.org::From %s")
