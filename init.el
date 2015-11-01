@@ -24,6 +24,9 @@
 
 ;;   python-pep8
 
+(package-initialize)
+(elpy-enable)
+
 ;; Global Settings
 
 (setq large-file-warning-threshold 50000000)
