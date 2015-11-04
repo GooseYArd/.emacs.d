@@ -1,3 +1,5 @@
+(setq server-use-tcp t)
+
 ;; (when
 ;;     (load
 ;;      (expand-file-name "~/.emacs.d/elpa/package.el"))
@@ -37,6 +39,9 @@
 (use-package yaml-mode)
 
 ;;   python-pep8
+
+(package-initialize)
+(elpy-enable)
 
 ;; Global Settings
 
@@ -103,12 +108,70 @@
     (1+ server-visit-files-custom-find:buffer-count)))
 (add-hook 'server-visit-hook 'server-visit-hook-custom-find)
 
+
+
 ;;
 ;; Modes
 ;;
 
 (add-to-list 'auto-mode-alist '("\\.mak.in\\'" . makefile-mode))
 
+<<<<<<< HEAD
+=======
+;; ;; erlang
+;; ;;(require 'erlang-start)
+;; (setq erlang-indent-level 4)
+;; (add-to-list 'auto-mode-alist '("\\.config$" . erlang-mode))
+;; '(safe-local-variable-values (quote ((erlang-indent-level . 4))))
+;; ;;(setq erlang-root-dir "/usr/local/lib/erlang")
+
+;; (if
+;;     (not (boundp 'erlang-root-dir))
+;;     (message "Skipping erlang-mode: erlang-root-dir not defined. To hook up erlang mode, set erlang-root-dir in your .emacs file before the call to 'require my-config'.")
+;;   (progn
+;;     (set 'erlang-bin (concat erlang-root-dir "/bin/"))
+;;     (set 'erlang-lib (concat erlang-root-dir "/lib/"))
+;;     (if
+;;         (not (boundp 'erlang-mode-path))
+;;         (set 'erlang-mode-path
+;;              (concat
+;;               erlang-lib
+;;               (file-name-completion "tools-" erlang-lib)
+;;               "emacs/erlang.el")))
+;;     (if
+;;         (and
+;;          (file-readable-p erlang-mode-path)
+;;          (file-readable-p erlang-bin))
+;;         (progn
+;;           (message "Setting up erlang-mode")
+;;           (set 'exec-path (cons erlang-bin exec-path))
+;;           (set 'load-path (cons
+;;                            (concat
+;;                             erlang-lib
+;;                             (file-name-completion "tools-" erlang-lib)
+;;                             "emacs")
+;;                            load-path))
+;;           (set 'load-path (cons (file-name-directory erlang-mode-path) load-path))
+;;           (require 'erlang-start)
+;;           (require 'erlang-flymake)
+;;           (require 'erlang-eunit)
+
+;;           (add-hook 'erlang-mode-hook
+;;                     (lambda ()
+;;                       (setq inferior-erlang-machine-options
+;;                             '(
+;;                               "-sname" "emacs"
+;;                               "-pz" "ebin deps/*/ebin apps/*/ebin"
+;;                               "-boot" "start_sasl"
+;;                               ))
+;;                       (imenu-add-to-menubar "imenu"))))
+;;       (message "Skipping erlang-mode: %s and/or %s not readable" erlang-bin erlang-mode-path)
+;;       )
+;;     )
+;;   )
+;; (provide 'erlang)
+
+>>>>>>> a555b8dcedb24b6f60bfbf5faa262cc4a9757efa
 ;; misc builtin minors
 ;;(which-function-mode t)
 (show-paren-mode t)
@@ -119,7 +182,11 @@
 ;; python-mode
 (setq pdb-path '~/bin/pdb gud-pdb-command-name (symbol-name pdb-path))
 ;;(require 'python-mode)
+<<<<<<< HEAD
 ;;(setq py-shell-name "/usr/local/bin/python2.7")
+=======
+(setq py-shell-name "/usr/local/bin/python2.7")
+>>>>>>> a555b8dcedb24b6f60bfbf5faa262cc4a9757efa
 
 ;;(require 'pymacs)
 ;;(pymacs-load "ropemacs" "rope-")
@@ -130,7 +197,11 @@
 ;;(setq python-shell-interpreter "/usr/local/bin/ipython console")
 ;;(require 'ipython)
 
+<<<<<<< HEAD
 ;; (define-key python-mode-map (kbd "TAB") 'python-indent-guess-indent-offset)
+=======
+;;(define-key python-mode-map (kbd "TAB") 'py-indent-line)
+>>>>>>> a555b8dcedb24b6f60bfbf5faa262cc4a9757efa
 
 ;;(require 'auto-complete-config)
 ;;(add-to-list 'ac-dictionary-directories "~/.emacs.d/elpa/auto-complete-20150408.1132/dict")
@@ -160,9 +231,9 @@
 
 ;; etags-update
 (require 'etags-update)
-(etags-update-mode 1)
-(setq etu/append-file-action 'add)
-(setq tags-revert-without-query 't)
+(etags-update-mode 0)
+;;(setq etu/append-file-action 'add)
+;;(setq tags-revert-without-query 't)
 
 ;; guide-key
 (require 'guide-key)
@@ -185,12 +256,12 @@
 ;; Post Mode
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (add-to-list 'auto-mode-alist '("sup\\.\\(compose\\|forward\\|reply\\|resume\\)-mode$" . post-mode))
-(load "~/.emacs.d/elisp/post.el")
+;;(load "~/.emacs.d/elisp/post.el")
 
 ;; point saving
-(setq save-place-file "~/.emacs.d/saveplace")
-(setq-default save-place t)
-(require 'saveplace)
+;; (setq save-place-file "~/.emacs.d/saveplace")
+;; (setq-default save-place t)
+;; (require 'saveplace)
 
 ;; ido
 (require 'ido)
@@ -343,6 +414,27 @@
 
 (put 'upcase-region 'disabled nil)
 
+;; Ignoring electric indentation
+(defun electric-indent-ignore-python (char)
+  "Ignore electric indentation for python-mode"
+  (if (equal major-mode 'python-mode)
+      'no-indent
+    nil))
+(add-hook 'electric-indent-functions 'electric-indent-ignore-python)
+
+(dolist (command '(yank yank-pop))
+   (eval `(defadvice ,command (after indent-region activate)
+            (and (not current-prefix-arg)
+                 (member major-mode '(emacs-lisp-mode lisp-mode
+                                                      clojure-mode    scheme-mode
+                                                      haskell-mode    ruby-mode
+                                                      rspec-mode      python-mode
+                                                      c-mode          c++-mode
+                                                      objc-mode       latex-mode
+                                                      plain-tex-mode))
+                 (let ((mark-even-if-inactive transient-mark-mode))
+                   (indent-region (region-beginning) (region-end) nil))))))
+
 (defun pylogsnip ()
   "insert some log handling crap"
   (interactive)
@@ -493,3 +585,10 @@ or nil if not found."
   (goto-char (point-min))
   (replace-regexp "^[\t ]*" "")
   (widen))
+
+(defun backward-kill-line (arg)
+   "Kill ARG lines backward."
+   (interactive "p")
+   (kill-line (- 1 arg)))
+
+(global-set-key "\C-cu" 'backward-kill-line)
