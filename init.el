@@ -15,10 +15,26 @@
 
 (package-initialize)
 
-(mapc
- (lambda (package)
-   (or (package-installed-p package)
-           (package-install package))) '(highlight-symbol erlang flyspell python-mode flymake dtrt-indent flx-ido guide-key ibuffer ido ido-vertical-mode magit markdown-mode annoying-arrows-mode org windmove yaml-mode))
+;; https://github.com/jwiegley/use-package
+(require 'use-package)
+(setq use-package-always-ensure t)
+(use-package highlight-symbol)
+(use-package erlang)
+(use-package flyspell)
+(use-package python-mode)
+(use-package flymake)
+(use-package dtrt-indent)
+(use-package flx-ido)
+(use-package guide-key)
+(use-package ibuffer)
+(use-package ido)
+(use-package ido-vertical-mode)
+(use-package magit)
+(use-package markdown-mode)
+(use-package annoying-arrows-mode)
+(use-package org)
+(use-package windmove)
+(use-package yaml-mode)
 
 ;;   python-pep8
 
