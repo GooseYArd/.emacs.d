@@ -17,10 +17,26 @@
 
 (package-initialize)
 
-(mapc
- (lambda (package)
-   (or (package-installed-p package)
-           (package-install package))) '(highlight-symbol erlang flyspell flymake dtrt-indent flx-ido guide-key ibuffer ido ido-vertical-mode magit markdown-mode annoying-arrows-mode org windmove yaml-mode))
+;; https://github.com/jwiegley/use-package
+(require 'use-package)
+(setq use-package-always-ensure t)
+(use-package highlight-symbol)
+(use-package erlang)
+(use-package flyspell)
+(use-package python-mode)
+(use-package flymake)
+(use-package dtrt-indent)
+(use-package flx-ido)
+(use-package guide-key)
+(use-package ibuffer)
+(use-package ido)
+(use-package ido-vertical-mode)
+(use-package magit)
+(use-package markdown-mode)
+(use-package annoying-arrows-mode)
+(use-package org)
+(use-package windmove)
+(use-package yaml-mode)
 
 ;;   python-pep8
 
@@ -43,7 +59,7 @@
 ;;(menu-bar-mode -1)
 (blink-cursor-mode -1)
 
-;; (toggle-debug-on-error t)
+;;(toggle-debug-on-quit t)
 
 (setq visible-bell t)
 (setq-default buffer-file-coding-system 'undecided-unix)
@@ -98,28 +114,10 @@
 ;; Modes
 ;;
 
-
-(when (load "flymake" t)
- (defun flymake-pylint-init ()
-   (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                      'flymake-create-temp-inplace))
-          (local-file (file-relative-name
-                       temp-file
-                       (file-name-directory buffer-file-name))))
-         (list "pep8" (list "--repeat" local-file))))
-
- (add-to-list 'flymake-allowed-file-name-masks
-              '("\\.py\\'" flymake-pylint-init)))
-
-(defun my-flymake-show-help ()
-  (when (get-char-property (point) 'flymake-overlay)
-    (let ((help (get-char-property (point) 'help-echo)))
-      (if help (message "%s" help)))))
-
-(add-hook 'post-command-hook 'my-flymake-show-help)
-
 (add-to-list 'auto-mode-alist '("\\.mak.in\\'" . makefile-mode))
 
+<<<<<<< HEAD
+=======
 ;; ;; erlang
 ;; ;;(require 'erlang-start)
 ;; (setq erlang-indent-level 4)
@@ -173,8 +171,9 @@
 ;;   )
 ;; (provide 'erlang)
 
+>>>>>>> a555b8dcedb24b6f60bfbf5faa262cc4a9757efa
 ;; misc builtin minors
-(which-function-mode t)
+;;(which-function-mode t)
 (show-paren-mode t)
 (setq visual-line-mode t)
 (column-number-mode 1)
@@ -183,18 +182,26 @@
 ;; python-mode
 (setq pdb-path '~/bin/pdb gud-pdb-command-name (symbol-name pdb-path))
 ;;(require 'python-mode)
+<<<<<<< HEAD
+;;(setq py-shell-name "/usr/local/bin/python2.7")
+=======
 (setq py-shell-name "/usr/local/bin/python2.7")
+>>>>>>> a555b8dcedb24b6f60bfbf5faa262cc4a9757efa
 
 ;;(require 'pymacs)
 ;;(pymacs-load "ropemacs" "rope-")
 ;;(setq ropemacs-enable-autoimport t)
 
-(setq ipython-command "/usr/local/bin/ipython")
+;;(setq ipython-command "/usr/local/bin/ipython")
 ;;(setq python-python-command "/usr/local/bin/ipython console")
 ;;(setq python-shell-interpreter "/usr/local/bin/ipython console")
 ;;(require 'ipython)
 
+<<<<<<< HEAD
+;; (define-key python-mode-map (kbd "TAB") 'python-indent-guess-indent-offset)
+=======
 ;;(define-key python-mode-map (kbd "TAB") 'py-indent-line)
+>>>>>>> a555b8dcedb24b6f60bfbf5faa262cc4a9757efa
 
 ;;(require 'auto-complete-config)
 ;;(add-to-list 'ac-dictionary-directories "~/.emacs.d/elpa/auto-complete-20150408.1132/dict")
@@ -209,8 +216,6 @@
 ;; yaml-mode
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-
-
 
 ;; org-mode
 ;;(setq org-ellipsis "")
