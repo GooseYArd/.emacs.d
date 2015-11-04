@@ -1,4 +1,4 @@
-(setq server-use-tcp t)
+;; (setq server-use-tcp t)
 
 ;; (when
 ;;     (load
@@ -213,6 +213,7 @@
 
 
 ;; org-mode
+;;(setq org-ellipsis "")
 (setq org-archive-location "~/archive.org::From %s")
 (add-hook 'org-shiftup-final-hook 'windmove-up)
 (add-hook 'org-shiftleft-final-hook 'windmove-left)
