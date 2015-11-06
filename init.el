@@ -24,6 +24,7 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 (use-package highlight-symbol)
+(use-package elpy)
 (use-package erlang)
 (use-package flyspell)
 (use-package python-mode)
