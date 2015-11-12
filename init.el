@@ -1,6 +1,9 @@
 ;; (setq server-use-tcp t)
 ;;(toggle-debug-on-quit t)
 
+
+(setq exec-path (append exec-path '("/usr/local/bin")))
+
 (setq load-path (cons "~/.emacs.d/elisp" load-path))
 
 (require 'package)
@@ -18,6 +21,7 @@
 (use-package python-mode)
 (use-package elpy)
 (use-package highlight-symbol)
+(use-package elpy)
 (use-package erlang)
 (use-package flyspell)
 (use-package flymake)
@@ -33,8 +37,6 @@
 (use-package org)
 (use-package windmove)
 (use-package yaml-mode)
-
-;;   python-pep8
 
 (package-initialize)
 (elpy-enable)
@@ -303,25 +305,9 @@
 (setq compilation-window-height 8)
 
 (when (eq system-type 'darwin)
-
-  ;; default Latin font (e.g. Consolas)
   (set-face-attribute 'default nil :family "M+ 1m")
-  (custom-set-faces '(default ((t (:height 120 :family "M+ 1m")))))
-
-  ;; default font size (point * 10)
-  ;;
-  ;; WARNING!  Depending on the default font,
-  ;; if the size is not supported very well, the frame will be clipped
-  ;; so that the beginning of the buffer may not be visible correctly.
-  (set-face-attribute 'default nil :height 180)
-
-  ;; use specific font for Korean charset.
-  ;; if you want to use different font size for specific charset,
-  ;; add :size POINT-SIZE in the font-spec.
-  ;;(set-fontset-font t 'hangul (font-spec :name "NanumGothicCoding"))
-
-  ;; you may want to add different for other charset in this way.
-  )
+  (custom-set-faces '(default ((t (:height 140 :family "M+ 1m")))))
+  (set-face-attribute 'default nil :height 140))
 
 (setq c-default-style "linux"
       c-basic-offset 8)
