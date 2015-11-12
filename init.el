@@ -1,29 +1,25 @@
 ;; (setq server-use-tcp t)
-
-;; (when
-;;     (load
-;;      (expand-file-name "~/.emacs.d/elpa/package.el"))
-;;   (package-initialize))
-;; (require 'appearance)
+;;(toggle-debug-on-quit t)
 
 (setq load-path (cons "~/.emacs.d/elisp" load-path))
 
 (require 'package)
+;; https://github.com/jwiegley/use-package
+(require 'bind-key)
+(require 'use-package)
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("org" . "http://orgmode.org/elpa/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
-
 (package-initialize)
 
-;; https://github.com/jwiegley/use-package
-(require 'use-package)
 (setq use-package-always-ensure t)
+(use-package python-mode)
+(use-package elpy)
 (use-package highlight-symbol)
 (use-package erlang)
 (use-package flyspell)
-(use-package python-mode)
 (use-package flymake)
 (use-package dtrt-indent)
 (use-package flx-ido)
@@ -49,17 +45,14 @@
 (setq initial-scratch-message "")
 (setq inhibit-startup-message t)
 
-
 (autoload 'zap-up-to-char "misc"
   "Kill up to, but not including ARGth occurrence of CHAR.")
 (global-set-key (kbd "M-z") 'zap-up-to-char)
 
 (if window-system (setq confirm-kill-emacs 'yes-or-no-p))
 (tool-bar-mode -1)
-;;(menu-bar-mode -1)
+(menu-bar-mode -1)
 (blink-cursor-mode -1)
-
-;;(toggle-debug-on-quit t)
 
 (setq visible-bell t)
 (setq-default buffer-file-coding-system 'undecided-unix)
@@ -84,7 +77,9 @@
 
 (modify-frame-parameters nil '((wait-for-wm . nil)))
 
-;;(add-hook 'before-save-hook 'whitespace-cleanup)
+(add-hook 'elpy-mode-hook
+          (lambda ()
+            (add-hook 'before-save-hook 'delete-trailing-whitespace nil t)))
 
 ;; make emacsclient split windows when visiting multiple files
 (defvar server-visit-files-custom-find:buffer-count)
@@ -109,15 +104,12 @@
 (add-hook 'server-visit-hook 'server-visit-hook-custom-find)
 
 
-
 ;;
 ;; Modes
 ;;
 
 (add-to-list 'auto-mode-alist '("\\.mak.in\\'" . makefile-mode))
 
-<<<<<<< HEAD
-=======
 ;; ;; erlang
 ;; ;;(require 'erlang-start)
 ;; (setq erlang-indent-level 4)
@@ -171,41 +163,12 @@
 ;;   )
 ;; (provide 'erlang)
 
->>>>>>> a555b8dcedb24b6f60bfbf5faa262cc4a9757efa
 ;; misc builtin minors
 ;;(which-function-mode t)
 (show-paren-mode t)
 (setq visual-line-mode t)
 (column-number-mode 1)
 
-;; http://www.saltycrane.com/blog/2010/05/my-emacs-python-environment/
-;; python-mode
-(setq pdb-path '~/bin/pdb gud-pdb-command-name (symbol-name pdb-path))
-;;(require 'python-mode)
-<<<<<<< HEAD
-;;(setq py-shell-name "/usr/local/bin/python2.7")
-=======
-(setq py-shell-name "/usr/local/bin/python2.7")
->>>>>>> a555b8dcedb24b6f60bfbf5faa262cc4a9757efa
-
-;;(require 'pymacs)
-;;(pymacs-load "ropemacs" "rope-")
-;;(setq ropemacs-enable-autoimport t)
-
-;;(setq ipython-command "/usr/local/bin/ipython")
-;;(setq python-python-command "/usr/local/bin/ipython console")
-;;(setq python-shell-interpreter "/usr/local/bin/ipython console")
-;;(require 'ipython)
-
-<<<<<<< HEAD
-;; (define-key python-mode-map (kbd "TAB") 'python-indent-guess-indent-offset)
-=======
-;;(define-key python-mode-map (kbd "TAB") 'py-indent-line)
->>>>>>> a555b8dcedb24b6f60bfbf5faa262cc4a9757efa
-
-;;(require 'auto-complete-config)
-;;(add-to-list 'ac-dictionary-directories "~/.emacs.d/elpa/auto-complete-20150408.1132/dict")
-;;(ac-config-default)
 
 (defadvice pdb (before gud-query-cmdline activate)
   "Provide a better default command line when called interactively."
@@ -218,7 +181,6 @@
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
 ;; org-mode
-;;(setq org-ellipsis "")
 (setq org-archive-location "~/archive.org::From %s")
 (add-hook 'org-shiftup-final-hook 'windmove-up)
 (add-hook 'org-shiftleft-final-hook 'windmove-left)
@@ -264,13 +226,17 @@
 ;; (setq-default save-place t)
 ;; (require 'saveplace)
 
+(setq-default show-trailing-whitespace t)
+
+
 ;; ido
 (require 'ido)
 (require 'flx-ido)
 (require 'ido-vertical-mode)
 (setq ido-use-faces nil)
 (ido-vertical-mode 1)
-(ido-mode 'both) ;; for buffers and files
+(ido-mode t)
+;; (ido-mode 'both) ;; for buffers and files
 
 (setq
   ido-save-directory-list-file "~/.emacs.d/cache/ido.last"
