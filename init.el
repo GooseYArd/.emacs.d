@@ -224,9 +224,9 @@
 ;;(load "~/.emacs.d/elisp/post.el")
 
 ;; point saving
-;; (setq save-place-file "~/.emacs.d/saveplace")
-;; (setq-default save-place t)
-;; (require 'saveplace)
+(require 'saveplace)
+(setq save-place-file "~/.emacs.d/saveplace")
+(setq-default save-place t)
 
 (setq-default show-trailing-whitespace t)
 
