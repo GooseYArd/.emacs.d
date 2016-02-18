@@ -43,6 +43,11 @@
 
 ;; Global Settings
 
+(fset 'noreview
+      "Code review: not needed since this is a minor change\C-e")
+(global-set-key (kbd "C-c n") 'noreview)
+
+
 (setq large-file-warning-threshold 50000000)
 (setq initial-scratch-message "")
 (setq inhibit-startup-message t)
