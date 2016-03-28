@@ -517,6 +517,7 @@ or nil if not found."
                        ((or (null parent) (equal parent (directory-file-name parent))) nil) ; Not found
                        (t (find-file-r (directory-file-name parent))))))) ; Continue
     (find-file-r default-directory)))
+
 (let ((my-tags-file (find-file-upwards "TAGS")))
   (when my-tags-file
     (message "Loading tags file: %s" my-tags-file)
@@ -550,6 +551,8 @@ or nil if not found."
    (kill-line (- 1 arg)))
 
 (global-set-key "\C-cu" 'backward-kill-line)
+
+(defalias 'yes-or-no-p 'y-or-n-p)
 
 (defun dwim-backward-kill-word ()
   "DWIM kill characters backward until encountering the beginning of a
