@@ -37,6 +37,8 @@
 (use-package org)
 (use-package windmove)
 (use-package yaml-mode)
+(use-package boxquote)
+(use-package footnote)
 
 (package-initialize)
 (elpy-enable)
@@ -226,7 +228,21 @@
 ;; Post Mode
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (add-to-list 'auto-mode-alist '("sup\\.\\(compose\\|forward\\|reply\\|resume\\)-mode$" . post-mode))
-;;(load "~/.emacs.d/elisp/post.el")
+
+(load "~/.emacs.d/elisp/post.el")
+(autoload 'post-mode "post" "mode for e-mail" t)
+
+(add-hook 'post-mode-hook
+  (lambda()
+    (auto-fill-mode t)
+    (setq fill-column 72)    ; rfc 1855 for usenet messages
+    (require 'footnote-mode)
+    (footmode-mode t)
+    (require 'boxquote)))
+
+(add-to-list 'auto-mode-alist
+             '("\\.*mutt-*\\|.article\\|\\.followup"
+                . post-mode))
 
 ;; point saving
 (require 'saveplace)
